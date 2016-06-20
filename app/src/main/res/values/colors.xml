@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 白色 -->
+    <color name="white">#FFFFFF</color>
+    <!-- 黑色 -->
+    <color name="black">#000000</color>
+    <!-- 透明 -->
+    <color name ="transparent">#00000000</color>
+
+    <!-- 主色 -->
+    <color name="blue">#1196db</color>
+
+    <!-- 背景色 -->
+    <color name="background">#e6e6e6</color>
+
+    <!-- 标题背景 -->
+    <color name="title_bg">#dbdbdb</color>
+
+    <color name="main">#d6204b</color>
+</resources>

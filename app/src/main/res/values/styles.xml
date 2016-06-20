@@ -1,0 +1,53 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/activity_animation</item>
+    </style>
+
+    <style name="blue_theme" parent="AppTheme">
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
+    <style name="red_theme" parent="AppTheme">
+        <item name="colorPrimary">@color/main</item>
+        <item name="colorPrimaryDark">@color/main</item>
+        <item name="colorAccent">@color/main</item>
+    </style>
+
+
+    <!-- activity animation 样式 -->
+    <style name="activity_animation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+    </style>
+
+    <!-- 启动样式 -->
+    <style name="start_theme" parent="AppTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="colorPrimary">@color/transparent</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+
+    </style>
+
+    <style name="activity_translucent" parent="AppTheme">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!--边界内点击水波纹-->
+    <style name="repple_in_backguound">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <!--边界外点击水波纹-->
+    <style name="repple_out_backguound">
+        <item name="android:background">?android:attr/actionBarItemBackground</item>
+    </style>
+
+</resources>

@@ -1,0 +1,23 @@
+<resources>
+
+    <dimen name="normal_size">40px</dimen>
+    <dimen name="large_size">54px</dimen>
+    <dimen name="max_size">60px</dimen>
+    <dimen name="small_size">32px</dimen>
+    <dimen name="min_size">20px</dimen>
+
+    <dimen name="normal_margin">48px</dimen>
+    <dimen name="large_margin">64px</dimen>
+    <dimen name="small_margin">32px</dimen>
+    <dimen name="min_margin">20px</dimen>
+
+    <dimen name="top_ico_margin">36px</dimen>
+
+    <dimen name="title_height">160px</dimen>
+
+    <dimen name="floating_margin_bottom">240px</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+</resources>
