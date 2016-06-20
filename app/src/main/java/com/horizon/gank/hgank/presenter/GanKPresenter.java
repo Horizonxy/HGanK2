@@ -27,6 +27,7 @@ public class GanKPresenter extends BasePresenter{
             @Override
             public void onError(Throwable e) {
                 vGank.onFailure();
+                onCompleted();
             }
 
             @Override
@@ -46,6 +47,7 @@ public class GanKPresenter extends BasePresenter{
                         vGank.onFinish();
                     }
                 }
+                onCompleted();
             }
         });
 

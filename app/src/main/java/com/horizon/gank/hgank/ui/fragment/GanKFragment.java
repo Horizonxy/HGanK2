@@ -1,6 +1,9 @@
 package com.horizon.gank.hgank.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,6 +26,7 @@ import com.horizon.gank.hgank.model.db.CommonDaoImpl;
 import com.horizon.gank.hgank.presenter.GanKPresenter;
 import com.horizon.gank.hgank.ui.adapter.recyclerview.QuickAdapter;
 import com.horizon.gank.hgank.ui.iview.GanKFragmentViewListener;
+import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
 import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.GsonUtils;
 import com.horizon.gank.hgank.util.NetUtils;
@@ -60,6 +64,8 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
     RecyclerView.ItemDecoration mItemDecoration;
     @Inject
     GanKPresenter mPresenter;
+    @Bind(R.id.afl_no_net)
+    AnimationFrameLayout mFlNoNet;
 
     private List<GanKData> mData;
     private int mPageNo;
@@ -70,6 +76,8 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
     private Map<String, Object> mCacheMap = new HashMap<String, Object>();
     private String ATY = "gank_type_list_";
     private String DATA_TYPE;
+
+    private Handler mHandler;
 
     public static GanKFragment newInstance(String type) {
         GanKFragment fragment = new GanKFragment();
@@ -93,6 +101,8 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
         mCommonDao = new CommonDaoImpl(getContext());
         mCacheMap.put(CommonCacheVo.ATY, ATY);
         mCacheMap.put(CommonCacheVo.DATA_TYPE, DATA_TYPE);
+
+        mHandler = new Handler();
     }
 
     @Nullable
@@ -164,7 +174,6 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
                 loadGankData();
             }
         }).show();
-        onCompleted(mPageNo);
     }
 
     @Override
@@ -173,7 +182,6 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
             mData.clear();
         }
         mData.addAll(data);
-//        mAdapter.notifyDataSetChanged();
         mAdapter.notifyItemRangeChanged(mData.size() - data.size(), data.size());
 
         if (mPageNo == 1) {
@@ -202,33 +210,49 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
     public void onCompleted(int pageNo) {
         if (pageNo == 1) {
             mRefreshLayout.finishRefresh();
-        } else {
-            mRefreshLayout.finishRefreshLoadMore();
         }
+        mRefreshLayout.finishRefreshLoadMore();
+
         if(mLoading.getVisibility() == View.VISIBLE){
             mLoading.setVisibility(View.GONE);
         }
     }
 
+    @OnClick(R.id.afl_no_net)
+    void setNet(){
+        Intent intent = new Intent(Settings.ACTION_SETTINGS);
+        startActivity(intent);
+    }
+
     private void loadGankData() {
         if (NetUtils.isNetworkConnected(getContext())) {
+            if(mFlNoNet.getVisibility() == View.VISIBLE){
+                mFlNoNet.setVisibility(View.GONE);
+            }
             mPresenter.loadData();
         } else {
-            int pageNo = mPageNo;
-            mCacheMap.put(CommonCacheVo.DATA_PAGE_NO, pageNo);
-            List<CommonCacheVo> commonlist = mCommonDao.findByColumns(mCacheMap);
-            if (commonlist != null && !commonlist.isEmpty()) {
-                List<GanKData> list = GsonUtils.getList(commonlist.get(0).getData(), GanKData.class);
-                if (pageNo == 1) {
-                    mData.clear();
-                }
-                mData.addAll(list);
-                mAdapter.notifyItemRangeChanged(mData.size() - list.size(), list.size());
-                mPageNo++;
-            } else {
-                onFinish();
+            if(mFlNoNet.getVisibility() == View.GONE){
+                mFlNoNet.setVisibility(View.VISIBLE);
             }
-            onCompleted(pageNo);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int pageNo = mPageNo;
+                    mCacheMap.put(CommonCacheVo.DATA_PAGE_NO, pageNo);
+                    List<CommonCacheVo> commonlist = mCommonDao.findByColumns(mCacheMap);
+                    if (commonlist != null && !commonlist.isEmpty()) {
+                        List<GanKData> list = GsonUtils.getList(commonlist.get(0).getData(), GanKData.class);
+                        if (pageNo == 1) {
+                            mData.clear();
+                        }
+                        mData.addAll(list);
+                        mAdapter.notifyItemRangeChanged(mData.size() - list.size(), list.size());
+                        mPageNo++;
+                    }
+                    onCompleted(pageNo);
+                }
+            }, 500);
+
         }
     }
 

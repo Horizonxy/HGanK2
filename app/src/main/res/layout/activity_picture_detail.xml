@@ -33,7 +33,7 @@
             android:background="#22000000"
             android:ellipsize="end"
             android:maxLines="3"
-            android:padding="@dimen/small_margin"
+            android:padding="@dimen/normal_margin"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_size" />
     </com.horizon.gank.hgank.ui.widget.AnimationFrameLayout>
