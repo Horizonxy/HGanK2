@@ -1,7 +1,9 @@
 package com.horizon.gank.hgank.ui.widget.web;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.webkit.WebSettings;
 
 public class WebView extends android.webkit.WebView {
@@ -39,6 +41,12 @@ public class WebView extends android.webkit.WebView {
         getSettings().setAllowFileAccess(true);
         getSettings().setUseWideViewPort(true);
         getSettings().setSupportMultipleWindows(true);
+        getSettings().setBuiltInZoomControls(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            getSettings().setMediaPlaybackRequiresUserGesture(true);
+        }
+
+        setLayerType(View.LAYER_TYPE_HARDWARE,  null);
 
         clearHistory();
     }

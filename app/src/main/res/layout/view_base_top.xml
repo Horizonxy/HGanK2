@@ -1,48 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:contentInsetStart="0px"
-    app:contentInsetLeft="0px"
-    app:contentInsetRight="0px"
-    app:contentInsetEnd="0px"
-    android:background="?attr/colorPrimary"
-    app:layout_scrollFlags="scroll|enterAlways">
+    android:layout_height="@dimen/title_height"
+    android:background="?attr/colorPrimary">
 
-    <com.zhy.autolayout.AutoRelativeLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/btn_left"
+        style="@style/repple_out_backguound"
+        android:layout_width="@dimen/title_height"
         android:layout_height="@dimen/title_height"
-        android:background="?attr/colorPrimary">
+        android:layout_centerVertical="true"
+        android:padding="@dimen/top_ico_margin" />
 
-        <ImageView
-            android:id="@+id/btn_left"
-            style="@style/repple_out_backguound"
-            android:layout_width="@dimen/title_height"
-            android:layout_height="@dimen/title_height"
-            android:padding="@dimen/top_ico_margin" />
-
-        <ImageView
-            android:id="@+id/btn_right"
-            style="@style/repple_out_backguound"
-            android:layout_width="@dimen/title_height"
-            android:layout_height="@dimen/title_height"
-            android:layout_alignParentRight="true"
-            android:padding="@dimen/top_ico_margin"
-            android:visibility="invisible" />
+    <ImageView
+        android:id="@+id/btn_right"
+        style="@style/repple_out_backguound"
+        android:layout_width="@dimen/title_height"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/top_ico_margin"
+        android:visibility="invisible" />
 
 
-        <com.horizon.gank.hgank.ui.widget.FlashBackGroundTextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/btn_right"
-            android:layout_toRightOf="@id/btn_left"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/max_size" />
+    <com.horizon.gank.hgank.ui.widget.FlashBackGroundTextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/btn_right"
+        android:layout_toRightOf="@id/btn_left"
+        android:ellipsize="end"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/max_size" />
 
-    </com.zhy.autolayout.AutoRelativeLayout>
-</android.support.v7.widget.Toolbar>
+</com.zhy.autolayout.AutoRelativeLayout>

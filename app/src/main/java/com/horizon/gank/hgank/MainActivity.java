@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,7 +20,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
@@ -29,10 +29,6 @@ public class MainActivity extends BaseActivity {
     TabLayout mTabLayout;
     @Bind(R.id.viewpager)
     ViewPager mViewPager;
-    @Bind(R.id.btn_left)
-    ImageView mBtnLeft;
-    @Bind(R.id.tv_title)
-    TextView mTvTitle;
 
     private static final List<String> TITLES = Arrays.asList(new String[]{ "福利", "Android", "iOS", "前端", "休息视频", "App", "瞎推荐", "拓展资源" });
 
@@ -44,19 +40,28 @@ public class MainActivity extends BaseActivity {
 
         setSupportActionBar(mToolBar);
         ActionBar ab = getSupportActionBar();
-//        ab.setHomeAsUpIndicator(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_palette));
-//        ab.setDisplayHomeAsUpEnabled(true);
-//        ab.setTitle("干货集中营");
-        DrawableUtils.setImageDrawable(mBtnLeft, MaterialDesignIconic.Icon.gmi_palette, 30, PreUtils.getInt(this, Constants.BUNDLE_THEME_BTN_COLOR,
+        ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        View topView = getLayoutInflater().inflate(R.layout.view_base_top, null);
+        TextView tvTitle = (TextView) topView.findViewById(R.id.tv_title);
+        ImageView btnLeft = (ImageView) topView.findViewById(R.id.btn_left);
+        tvTitle.setText("干货集中营");
+        DrawableUtils.setImageDrawable(btnLeft, MaterialDesignIconic.Icon.gmi_palette, 30, PreUtils.getInt(this, Constants.BUNDLE_THEME_BTN_COLOR,
                 getResources().getColor(R.color.blue)));
-        mTvTitle.setText("干货集中营");
+        ab.setCustomView(topView);
+        btnLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.getId() == R.id.btn_left){
+                    changeTheme();
+                }
+            }
+        });
 
         GanKTabAdapter adapter = new GanKTabAdapter(TITLES, getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    @OnClick(R.id.btn_left)
     void changeTheme(){
         int current = PreUtils.getInt(this, Constants.BUNDLE_THEME, 0);
         if(current == 0 || current == R.style.red_theme){

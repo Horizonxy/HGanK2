@@ -64,11 +64,17 @@ public class SystemStatusManager {
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			// check theme attrs
-			int[] attrs = { android.R.attr.windowTranslucentStatus, android.R.attr.windowTranslucentNavigation };
-			TypedArray a = activity.obtainStyledAttributes(attrs);
+			//int[] attrs = { android.R.attr.windowTranslucentStatus, android.R.attr.windowTranslucentNavigation };
+			TypedArray a = activity.obtainStyledAttributes(new int[]{android.R.attr.windowTranslucentStatus});
 			try {
 				mStatusBarAvailable = a.getBoolean(0, false);
-				mNavBarAvailable = a.getBoolean(1, false);
+			} finally {
+				a.recycle();
+			}
+
+			a = activity.obtainStyledAttributes(new int[]{android.R.attr.windowTranslucentNavigation});
+			try {
+				mNavBarAvailable = a.getBoolean(0, false);
 			} finally {
 				a.recycle();
 			}

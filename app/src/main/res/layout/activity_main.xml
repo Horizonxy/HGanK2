@@ -10,9 +10,17 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <include
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/tool_bar"
-            layout="@layout/view_base_top" />
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentInsetStart="0px"
+            app:contentInsetLeft="0px"
+            app:contentInsetRight="0px"
+            app:contentInsetEnd="0px"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"/>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
