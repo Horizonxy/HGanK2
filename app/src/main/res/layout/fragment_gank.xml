@@ -40,12 +40,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/floating_margin_bottom"
-        android:layout_marginRight="@dimen/large_margin"
+        android:layout_marginBottom="64dp"
+        android:layout_marginRight="12dp"
         android:visibility="gone"
-        app:borderWidth="0dp"
-        app:elevation="@dimen/small_margin"
-        app:pressedTranslationZ="@dimen/normal_margin" />
+        app:borderWidth="2dp"
+        app:elevation="2dp"
+        app:pressedTranslationZ="4dp" />
 
     <com.horizon.gank.hgank.ui.widget.AnimationFrameLayout
         android:id="@+id/afl_no_net"
