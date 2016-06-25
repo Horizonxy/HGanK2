@@ -47,7 +47,6 @@ public class GanKPresenter extends BasePresenter{
                         vGank.onFinish();
                     }
                 }
-                onCompleted();
             }
         });
 
