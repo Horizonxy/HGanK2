@@ -115,7 +115,7 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     @Override
     protected void onDestroy() {
         mWevView.stopLoading();
-        mWevView.destroy();
+        mWevView.setVisibility(View.GONE);
         super.onDestroy();
     }
 
