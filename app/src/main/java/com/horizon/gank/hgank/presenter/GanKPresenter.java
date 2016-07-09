@@ -27,12 +27,6 @@ public class GanKPresenter extends BasePresenter{
             @Override
             public void onError(Throwable e) {
                 vGank.onFailure();
-                onCompleted();
-            }
-
-            @Override
-            public void onCompleted() {
-                vGank.onCompleted(pageNo);
             }
 
             @Override
@@ -43,6 +37,7 @@ public class GanKPresenter extends BasePresenter{
                     List<GanKData> data = obj.getResults();
                     if(data != null && data.size() > 0){
                         vGank.onSuccess(data);
+                        vGank.onCompleted(pageNo);
                     } else {
                         vGank.onFinish();
                     }

@@ -5,15 +5,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.horizon.gank.hgank.R;
+import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
 import com.horizon.gank.hgank.di.FragmentScope;
 import com.horizon.gank.hgank.model.bean.GanKData;
 import com.horizon.gank.hgank.model.data.GanKModel;
 import com.horizon.gank.hgank.presenter.GanKPresenter;
-import com.horizon.gank.hgank.ui.adapter.GanKAdapter;
-import com.horizon.gank.hgank.ui.adapter.GanKNormalAdapter;
+import com.horizon.gank.hgank.ui.adapter.RecyclerAdapter;
+import com.horizon.gank.hgank.ui.adapter.RecyclerNormalAdapter;
 import com.horizon.gank.hgank.ui.adapter.recyclerview.DividerItemDecoration;
-import com.horizon.gank.hgank.ui.adapter.recyclerview.QuickAdapter;
 import com.horizon.gank.hgank.ui.adapter.recyclerview.SpacesItemDecoration;
 import com.horizon.gank.hgank.ui.iview.GanKFragmentViewListener;
 import com.horizon.gank.hgank.util.DisplayUtils;
@@ -46,11 +45,11 @@ public class GanKFragmentModule {
 
     @FragmentScope
     @Provides
-    public QuickAdapter<GanKData> provideGanKAdapter(){
+    public RecyclerAdapterWithHF provideRecyclerAdapterWithHF(){
         if(mType.equals("福利")){
-            return new GanKAdapter(mAty, R.layout.item_welfare, mData);
+            return new RecyclerAdapterWithHF(new RecyclerAdapter(mAty, mData));
         } else {
-            return new GanKNormalAdapter(mAty, R.layout.item_type_list, mData, mType);
+            return new RecyclerAdapterWithHF(new RecyclerNormalAdapter(mAty, mData, mType));
         }
     }
 

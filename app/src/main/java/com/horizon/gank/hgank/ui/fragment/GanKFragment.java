@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -13,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cjj.MaterialRefreshLayout;
-import com.cjj.MaterialRefreshListener;
-import com.horizon.gank.hgank.Application;
+import com.chanven.lib.cptr.PtrClassicFrameLayout;
+import com.chanven.lib.cptr.PtrDefaultHandler;
+import com.chanven.lib.cptr.PtrFrameLayout;
+import com.chanven.lib.cptr.loadmore.OnLoadMoreListener;
+import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.di.component.DaggerGanKFragmentComponent;
@@ -24,14 +25,10 @@ import com.horizon.gank.hgank.model.bean.CommonCacheVo;
 import com.horizon.gank.hgank.model.bean.GanKData;
 import com.horizon.gank.hgank.model.db.CommonDaoImpl;
 import com.horizon.gank.hgank.presenter.GanKPresenter;
-import com.horizon.gank.hgank.ui.adapter.recyclerview.QuickAdapter;
 import com.horizon.gank.hgank.ui.iview.GanKFragmentViewListener;
 import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
-import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.GsonUtils;
 import com.horizon.gank.hgank.util.NetUtils;
-import com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar;
-import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,14 +47,10 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
 
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
-    @Bind(R.id.refresh)
-    MaterialRefreshLayout mRefreshLayout;
-    @Bind(R.id.btn_to_top)
-    FloatingActionButton btnToTop;
-    @Bind(R.id.load_progress)
-    CircleProgressBar mLoading;
+    @Bind(R.id.refresh_layout)
+    PtrClassicFrameLayout mRefreshLayout;
     @Inject
-    QuickAdapter<GanKData> mAdapter;
+    RecyclerAdapterWithHF mAdapter;
     @Inject
     RecyclerView.LayoutManager mLayoutManager;
     @Inject
@@ -69,14 +62,11 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
 
     private List<GanKData> mData;
     private int mPageNo;
-
     private View mRootView;
-
     private CommonDaoImpl mCommonDao;
     private Map<String, Object> mCacheMap = new HashMap<String, Object>();
     private String ATY = "gank_type_list_";
     private String DATA_TYPE;
-
     private Handler mHandler;
 
     public static GanKFragment newInstance(String type) {
@@ -117,27 +107,26 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
             mRecyclerView.addItemDecoration(mItemDecoration);
             mRecyclerView.clearAnimation();
 
-            mRefreshLayout.setLoadMore(true);
-            mRefreshLayout.setMaterialRefreshListener(new RefreshListener());
-            mRefreshLayout.autoRefresh();
-
-            btnToTop.setImageDrawable(DrawableUtils.getDrawable(getContext(), MaterialDesignIconic.Icon.gmi_long_arrow_up));
-
-            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                private int totalY;
-                private final int  OFFSET_Y = (int) (Application.application.SCREENHEIGHT * 2.5);
-
+            mRefreshLayout.setLastUpdateTimeRelateObject(this);
+            mRefreshLayout.setPtrHandler(new PtrDefaultHandler() {
                 @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    totalY = mRecyclerView.computeVerticalScrollOffset();
-                    if(totalY > OFFSET_Y){
-                        btnToTop.setVisibility(View.VISIBLE);
-                    } else {
-                        btnToTop.setVisibility(View.GONE);
-                    }
+                public void onRefreshBegin(PtrFrameLayout frame) {
+                    mPageNo = 1;
+                    loadGankData();
                 }
             });
+            mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+                @Override
+                public void loadMore() {
+                    loadGankData();
+                }
+            });
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mRefreshLayout.autoRefresh(true);
+                }
+            }, 150);
         }
         return mRootView;
     }
@@ -148,12 +137,6 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
         if (null != mRootView) {
             ((ViewGroup) mRootView.getParent()).removeView(mRootView);
         }
-    }
-
-    @OnClick(R.id.btn_to_top)
-    void toTop(){
-        mRecyclerView.scrollToPosition(0);
-        btnToTop.setVisibility(View.GONE);
     }
 
     @Override
@@ -168,12 +151,8 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
 
     @Override
     public void onFailure() {
-        Snackbar.make(mRefreshLayout, "加载出问题了~~", Snackbar.LENGTH_SHORT).setAction("重试", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadGankData();
-            }
-        }).show();
+        Snackbar.make(mRefreshLayout, "加载出问题了~~", Snackbar.LENGTH_SHORT).show();
+        mRefreshLayout.loadMoreComplete(false);
     }
 
     @Override
@@ -182,7 +161,7 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
             mData.clear();
         }
         mData.addAll(data);
-        mAdapter.notifyItemRangeChanged(mData.size() - data.size(), data.size());
+        mAdapter.notifyItemRangeChangedHF(mData.size() - data.size(), data.size());
 
         if (mPageNo == 1) {
             Map<String, Object> delMap = new HashMap<String, Object>();
@@ -204,18 +183,17 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
     @Override
     public void onFinish() {
         Snackbar.make(mRefreshLayout, "没有更多数据了", Snackbar.LENGTH_SHORT).show();
+        mRefreshLayout.setNoMoreData();
     }
 
     @Override
     public void onCompleted(int pageNo) {
-        if (pageNo == 1) {
-            mRefreshLayout.finishRefresh();
+        if(pageNo == 1){
+            mRefreshLayout.refreshComplete();
+        } else {
+            mRefreshLayout.loadMoreComplete(true);
         }
-        mRefreshLayout.finishRefreshLoadMore();
-
-        if(mLoading.getVisibility() == View.VISIBLE){
-            mLoading.setVisibility(View.GONE);
-        }
+        mRefreshLayout.setLoadMoreEnable(true);
     }
 
     @OnClick(R.id.afl_no_net)
@@ -246,27 +224,13 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
                             mData.clear();
                         }
                         mData.addAll(list);
-                        mAdapter.notifyItemRangeChanged(mData.size() - list.size(), list.size());
+                        mAdapter.notifyItemRangeChangedHF(mData.size() - list.size(), list.size());
                         mPageNo++;
                     }
                     onCompleted(pageNo);
                 }
             }, 500);
 
-        }
-    }
-
-    class RefreshListener extends MaterialRefreshListener {
-
-        @Override
-        public void onRefresh(MaterialRefreshLayout materialRefreshLayout) {
-            mPageNo = 1;
-            loadGankData();
-        }
-
-        @Override
-        public void onRefreshLoadMore(MaterialRefreshLayout materialRefreshLayout) {
-            loadGankData();
         }
     }
 
