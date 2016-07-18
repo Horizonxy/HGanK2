@@ -29,6 +29,7 @@ import com.horizon.gank.hgank.ui.iview.GanKFragmentViewListener;
 import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
 import com.horizon.gank.hgank.util.GsonUtils;
 import com.horizon.gank.hgank.util.NetUtils;
+import com.horizon.gank.hgank.util.SimpleSubscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,9 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class GanKFragment extends Fragment implements GanKFragmentViewListener {
 
@@ -212,26 +216,45 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
             if(mFlNoNet.getVisibility() == View.GONE){
                 mFlNoNet.setVisibility(View.VISIBLE);
             }
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    int pageNo = mPageNo;
-                    mCacheMap.put(CommonCacheVo.DATA_PAGE_NO, pageNo);
-                    List<CommonCacheVo> commonlist = mCommonDao.findByColumns(mCacheMap);
-                    if (commonlist != null && !commonlist.isEmpty()) {
-                        List<GanKData> list = GsonUtils.getList(commonlist.get(0).getData(), GanKData.class);
-                        if (pageNo == 1) {
-                            mData.clear();
-                        }
-                        mData.addAll(list);
-                        mAdapter.notifyItemRangeChangedHF(mData.size() - list.size(), list.size());
-                        mPageNo++;
-                    }
-                    onCompleted(pageNo);
-                }
-            }, 500);
-
+            loadCache();
         }
+    }
+
+    private void loadCache(){
+        final int pageNo = mPageNo;
+        rx.Observable.just(pageNo)
+                .map(new Func1<Integer,  List<GanKData>>() {
+                    @Override
+                    public  List<GanKData> call(Integer integer) {
+                        mCacheMap.put(CommonCacheVo.DATA_PAGE_NO, integer);
+                        List<CommonCacheVo> commonlist = mCommonDao.findByColumns(mCacheMap);
+                        if (commonlist != null && !commonlist.isEmpty()) {
+                            List<GanKData> list = GsonUtils.getList(commonlist.get(0).getData(), GanKData.class);
+                            return list;
+                        }
+                        return null;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleSubscriber<List<GanKData>>(){
+                    @Override
+                    public void onNext(List<GanKData> list) {
+                        if(list != null){
+                            if (pageNo == 1) {
+                                mData.clear();
+                            }
+                            mData.addAll(list);
+                            mAdapter.notifyItemRangeChangedHF(mData.size() - list.size(), list.size());
+                            mPageNo++;
+                        }
+                        GanKFragment.this.onCompleted(pageNo);
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        GanKFragment.this.onCompleted(pageNo);
+                    }
+                });
     }
 
     @Override

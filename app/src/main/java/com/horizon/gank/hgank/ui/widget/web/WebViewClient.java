@@ -19,7 +19,7 @@ import java.net.URL;
 
 public class WebViewClient extends android.webkit.WebViewClient implements  WebViewView {
 
-    private static String IMG_CACHE = FileUtils.getEnvPath(Application.application, true, Constants.IMG_CACHE_DIR);
+    private static String IMG_CACHE = FileUtils.getEnvPath(Application.application, true, Constants.IMG_WEB_CACHE_DIR);
     WebViewView mWebView;
 
     public WebViewClient(WebViewView mWebView){

@@ -9,8 +9,8 @@ android {
         applicationId "com.horizon.gank.hgank"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 3
-        versionName "3.0"
+        versionCode 4
+        versionName "4.0"
     }
     buildTypes {
         release {
@@ -48,5 +48,4 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.3.0'
     compile 'com.google.dagger:dagger:2.0.2'
     compile 'com.google.dagger:dagger-compiler:2.0.2'
-
 }
