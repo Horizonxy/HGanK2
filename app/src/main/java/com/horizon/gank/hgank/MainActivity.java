@@ -1,5 +1,8 @@
 package com.horizon.gank.hgank;
 
+import android.content.Context;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -9,8 +12,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.horizon.gank.hgank.receiver.NetReceiver;
 import com.horizon.gank.hgank.ui.adapter.GanKTabAdapter;
 import com.horizon.gank.hgank.util.DrawableUtils;
+import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.PreUtils;
 import com.horizon.gank.hgank.util.ThemeUtils;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
@@ -31,6 +36,7 @@ public class MainActivity extends BaseActivity {
     ViewPager mViewPager;
 
     private static final List<String> TITLES = Arrays.asList(new String[]{ "福利", "Android", "iOS", "前端", "休息视频", "App", "瞎推荐", "拓展资源" });
+    private  NetReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,12 @@ public class MainActivity extends BaseActivity {
         GanKTabAdapter adapter = new GanKTabAdapter(TITLES, getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        receiver = new NetReceiver();
+        receiver.setListener(new NetListener());
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
     }
 
     void changeTheme(){
@@ -76,8 +88,34 @@ public class MainActivity extends BaseActivity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
     }
 
+    class NetListener implements NetReceiver.OnNetListener {
+
+        @Override
+        public Context getCxt() {
+            return MainActivity.this;
+        }
+
+        @Override
+        public void hasNet() {
+            LogUtils.e("无网络...");
+        }
+
+        @Override
+        public void noNet() {
+            LogUtils.e("有网络...");
+        }
+    }
+
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(receiver!= null) {
+            unregisterReceiver(receiver);
+        }
+        super.onDestroy();
     }
 }
