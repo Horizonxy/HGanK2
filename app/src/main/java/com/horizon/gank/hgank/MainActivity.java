@@ -18,13 +18,16 @@ import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.PreUtils;
 import com.horizon.gank.hgank.util.ThemeUtils;
+import com.jakewharton.rxbinding.view.RxView;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.functions.Action1;
 
 public class MainActivity extends BaseActivity {
 
@@ -54,14 +57,15 @@ public class MainActivity extends BaseActivity {
         DrawableUtils.setImageDrawable(btnLeft, MaterialDesignIconic.Icon.gmi_palette, 30, PreUtils.getInt(this, Constants.BUNDLE_THEME_BTN_COLOR,
                 getResources().getColor(R.color.blue)));
         ab.setCustomView(topView);
-        btnLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.getId() == R.id.btn_left){
-                    changeTheme();
-                }
-            }
-        });
+
+        RxView.clicks(btnLeft)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        changeTheme();
+                    }
+                });
 
         GanKTabAdapter adapter = new GanKTabAdapter(TITLES, getSupportFragmentManager());
         mViewPager.setAdapter(adapter);

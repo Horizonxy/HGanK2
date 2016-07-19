@@ -41,7 +41,7 @@ public class WebView extends android.webkit.WebView {
         getSettings().setAllowFileAccess(true);
         getSettings().setUseWideViewPort(true);
         getSettings().setSupportMultipleWindows(true);
-        getSettings().setBuiltInZoomControls(true);
+        //getSettings().setBuiltInZoomControls(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             getSettings().setMediaPlaybackRequiresUserGesture(true);
         }

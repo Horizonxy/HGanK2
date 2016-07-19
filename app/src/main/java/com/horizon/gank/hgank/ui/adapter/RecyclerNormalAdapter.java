@@ -12,8 +12,14 @@ import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.model.bean.GanKData;
 import com.horizon.gank.hgank.ui.activity.WebViewActivity;
+import com.jakewharton.rxbinding.view.RxView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import rx.functions.Action1;
 
 public class RecyclerNormalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<GanKData> mDatas;
@@ -41,7 +47,20 @@ public class RecyclerNormalAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         holder.tvDesc.setText(item.getDesc() == null ? "" : item.getDesc());
         holder.tvWho.setText(item.getWho() == null ? "" : "via. "+item.getWho());
-        holder.vItem.setOnClickListener(new ImageClickListener(item));
+
+        RxView.clicks(holder.vItem)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        Intent intent = new Intent(mCxt, WebViewActivity.class);
+                        intent.putExtra(Constants.BUNDLE_WEBVIEW_URL, item.getUrl());
+                        if ("休息视频".equals(mType)) {
+                            intent.putExtra(Constants.BUNDLE_WEBVIEW_VEDIO, true);
+                        }
+                        mCxt.startActivity(intent);
+                    }
+                });
     }
 
     @Override
@@ -51,39 +70,18 @@ public class RecyclerNormalAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public class ChildViewHolder extends RecyclerView.ViewHolder {
-//        @Bind(R.id.tv_user)
+        @Bind(R.id.tv_user)
         TextView tvWho;
-//        @Bind(R.id.tv_title)
+        @Bind(R.id.tv_title)
         TextView tvDesc;
-//        @Bind(R.id.ll_list_item)
+        @Bind(R.id.ll_list_item)
         View vItem;
 
         public ChildViewHolder(View view) {
             super(view);
-//            ButterKnife.bind(view);
-            tvWho = (TextView) view.findViewById(R.id.tv_user);
-            tvDesc = (TextView) view.findViewById(R.id.tv_title);
-            vItem =  view.findViewById(R.id.ll_list_item);
+            ButterKnife.bind(this, view);
         }
 
     }
 
-    class ImageClickListener implements View.OnClickListener {
-
-        private GanKData data;
-
-        public ImageClickListener( GanKData data) {
-            this.data = data;
-        }
-
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(mCxt, WebViewActivity.class);
-            intent.putExtra(Constants.BUNDLE_WEBVIEW_URL, data.getUrl());
-            if ("休息视频".equals(mType)) {
-                intent.putExtra(Constants.BUNDLE_WEBVIEW_VEDIO, true);
-            }
-            mCxt.startActivity(intent);
-        }
-    }
 }

@@ -18,11 +18,14 @@ import com.horizon.gank.hgank.ui.widget.web.WebView;
 import com.horizon.gank.hgank.ui.widget.web.WebViewClient;
 import com.horizon.gank.hgank.ui.widget.web.WebViewView;
 import com.horizon.gank.hgank.util.DrawableUtils;
+import com.jakewharton.rxbinding.view.RxView;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+import rx.functions.Action1;
 
 public class WebViewActivity extends BaseActivity implements WebViewView {
 
@@ -66,13 +69,27 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
             }
             firstLoad();
         }
-    }
 
+        RxView.clicks(tvOther)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(mWevView.getUrl()));
+                        startActivity(intent);
+                    }
+                });
 
-
-    @OnClick(R.id.btn_left)
-    void clickLeft(){
-        back();
+        RxView.clicks(mBtnLeft)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        back();
+                    }
+                });
     }
 
     private void firstLoad(){
@@ -88,14 +105,6 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
         if(mHasVideo && !tvOther.isShown()){
             tvOther.setVisibility(View.VISIBLE);
         }
-    }
-
-    @OnClick(R.id.tv_other)
-    void otherClick(){
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(mWevView.getUrl()));
-        startActivity(intent);
     }
 
     @Override

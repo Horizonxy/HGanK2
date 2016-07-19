@@ -18,11 +18,18 @@ import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.model.bean.GanKData;
 import com.horizon.gank.hgank.ui.activity.PictureDetailActivity;
 import com.horizon.gank.hgank.util.SmallPicInfo;
+import com.jakewharton.rxbinding.view.RxView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<GanKData> mDatas;
@@ -67,7 +74,40 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
         holder.tvWho.setText(item.getWho() == null ? "" : "via. "+item.getWho());
         holder.tvDesc.setText(item.getDesc() == null ? "" : item.getDesc());
-        holder.vCard.setOnClickListener(new ImageClickListener(imageView, item));
+
+        RxView.clicks(holder.vCard)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .map(new Func1<Void, SmallPicInfo>() {
+                    @Override
+                    public SmallPicInfo call(Void aVoid) {
+                        imageView.setDrawingCacheEnabled(true);
+                        Bitmap bitmap = imageView.getDrawingCache();
+
+                        int[] screenLocation = new int[2];
+                        imageView.getLocationOnScreen(screenLocation);
+
+                        SmallPicInfo info = new SmallPicInfo(item, screenLocation[0], screenLocation[1], imageView.getWidth(), imageView.getHeight(), 0, Bitmap.createBitmap(bitmap));
+
+                        imageView.setDrawingCacheEnabled(false);
+
+                        return info;
+                    }
+                })
+                .filter(new Func1<SmallPicInfo, Boolean>() {
+                    @Override
+                    public Boolean call(SmallPicInfo smallPicInfo) {
+                        return smallPicInfo != null;
+                    }
+                })
+                .subscribe(new Action1<SmallPicInfo>() {
+                    @Override
+                    public void call(SmallPicInfo smallPicInfo) {
+                        Intent intent = new Intent(mCxt, PictureDetailActivity.class);
+                        intent.putExtra(Constants.BUNDLE_PIC_INFOS, smallPicInfo);
+                        mCxt.startActivity(intent);
+                        ((Activity) mCxt).overridePendingTransition(0, 0);
+                    }
+                });
     }
 
     @Override
@@ -77,50 +117,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class ChildViewHolder extends RecyclerView.ViewHolder {
-//        @Bind(R.id.item_iv_welfare)
+        @Bind(R.id.item_iv_welfare)
         ImageView ivWelfare;
-//        @Bind(R.id.tv_desc)
+        @Bind(R.id.item_tv_user)
         TextView tvWho;
+        @Bind(R.id.item_tv_desc)
         TextView tvDesc;
-//        @Bind(R.id.card_view)
+        @Bind(R.id.card_view)
         View vCard;
 
         public ChildViewHolder(View view) {
             super(view);
-//            ButterKnife.bind(view);
-            ivWelfare = (ImageView) view.findViewById(R.id.item_iv_welfare);
-            tvDesc = (TextView) view.findViewById(R.id.item_tv_desc);
-            vCard = view.findViewById(R.id.card_view);
-            tvWho = (TextView) view.findViewById(R.id.item_tv_user);
-        }
-    }
-
-    class ImageClickListener implements View.OnClickListener {
-
-        private ImageView imageView;
-        private GanKData data;
-
-        public ImageClickListener(ImageView imageView, GanKData data) {
-            this.imageView = imageView;
-            this.data = data;
-        }
-
-        @Override
-        public void onClick(View view) {
-            imageView.setDrawingCacheEnabled(true);
-            Bitmap bitmap = imageView.getDrawingCache();
-
-            int[] screenLocation = new int[2];
-            imageView.getLocationOnScreen(screenLocation);
-
-            SmallPicInfo info = new SmallPicInfo(data, screenLocation[0], screenLocation[1], imageView.getWidth(), imageView.getHeight(), 0, Bitmap.createBitmap(bitmap));
-
-            Intent intent = new Intent(mCxt, PictureDetailActivity.class);
-            intent.putExtra(Constants.BUNDLE_PIC_INFOS, info);
-            mCxt.startActivity(intent);
-            ((Activity) mCxt).overridePendingTransition(0, 0);
-
-            imageView.setDrawingCacheEnabled(false);
+            ButterKnife.bind(this, view);
         }
     }
 }
