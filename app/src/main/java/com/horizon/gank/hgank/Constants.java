@@ -4,7 +4,7 @@ public class Constants {
 
 	public static final String END_POIND = "http://gank.io";
 
-	public static final String BASE_DIR = "horizon_gank";
+	public static final String BASE_DIR = "horizon_gank_5.0";
 	public static final String IMG_CACHE_DIR = BASE_DIR.concat("/image_cache");
 	public static final String IMG_WEB_CACHE_DIR = BASE_DIR.concat("/image_web");
 

@@ -7,6 +7,7 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/repple_out_backguound"
         fresco:cardCornerRadius="10px"
         fresco:cardElevation="8px">
 
@@ -17,7 +18,6 @@
             <com.horizon.gank.hgank.ui.widget.XCRoundImageView
                 xmlns:xcround="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/item_iv_welfare"
-                style="@style/repple_out_backguound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxHeight="720px"
@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="#22000000"
+                android:background="@drawable/bottom_round_background"
                 android:orientation="vertical"
                 android:padding="@dimen/min_margin">
 
