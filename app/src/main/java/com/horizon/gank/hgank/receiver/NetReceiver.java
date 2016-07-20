@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 
 import com.horizon.gank.hgank.util.NetUtils;
+import com.horizon.gank.hgank.util.RxBus;
 import com.horizon.gank.hgank.util.SimpleSubscriber;
 
 import rx.Observable;
@@ -13,13 +14,8 @@ import rx.functions.Func1;
 
 public class NetReceiver extends BroadcastReceiver {
 
-    private OnNetListener mListener;
-
-    public void setListener(OnNetListener mListener){
-        this.mListener = mListener;
-    }
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         Observable.just(intent)
                 .filter(new Func1<Intent, Boolean>() {
                     @Override
@@ -42,18 +38,11 @@ public class NetReceiver extends BroadcastReceiver {
             @Override
             public void onNext(String obj) {
 
-                if(NetUtils.isNetworkConnected(mListener.getCxt())){
-                    mListener.hasNet();
-                } else {
-                    mListener.noNet();
-                }
+                RxBus.NetEvent event = new RxBus.NetEvent();
+                event.setHasNet(NetUtils.isNetworkConnected(context));
+                RxBus.getInstance().send(event);
             }
         });
     }
 
-    public interface OnNetListener {
-        Context getCxt();
-        void hasNet();
-        void noNet();
-    }
 }

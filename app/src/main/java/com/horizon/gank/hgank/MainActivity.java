@@ -1,6 +1,5 @@
 package com.horizon.gank.hgank;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -18,9 +17,9 @@ import com.horizon.gank.hgank.receiver.NetReceiver;
 import com.horizon.gank.hgank.ui.adapter.GanKTabAdapter;
 import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
 import com.horizon.gank.hgank.util.DrawableUtils;
-import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.NetUtils;
 import com.horizon.gank.hgank.util.PreUtils;
+import com.horizon.gank.hgank.util.RxBus;
 import com.horizon.gank.hgank.util.ThemeUtils;
 import com.jakewharton.rxbinding.view.RxView;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
@@ -31,7 +30,11 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends BaseActivity {
 
@@ -46,6 +49,7 @@ public class MainActivity extends BaseActivity {
 
     private static final List<String> TITLES = Arrays.asList(new String[]{ "福利", "Android", "iOS", "前端", "休息视频", "App", "瞎推荐", "拓展资源" });
     private  NetReceiver receiver;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +92,29 @@ public class MainActivity extends BaseActivity {
                 });
         mFlNoNet.setVisibility(NetUtils.isNetworkConnected(this) ? View.GONE : View.VISIBLE);
 
+        Subscription subscription = RxBus.getInstance().toObservable(RxBus.NetEvent.class)
+                .filter(new Func1<RxBus.NetEvent, Boolean>() {
+                    @Override
+                    public Boolean call(RxBus.NetEvent netEvent) {
+                        return netEvent != null;
+                    }
+                })
+                .map(new Func1<RxBus.NetEvent, Boolean>() {
+                    @Override
+                    public Boolean call(RxBus.NetEvent netEvent) {
+                        return netEvent.isHasNet();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        mFlNoNet.setVisibility(aBoolean ? View.GONE : View.VISIBLE);
+                    }
+                });
+        mCompositeSubscription.add(subscription);
+
         receiver = new NetReceiver();
-        receiver.setListener(new NetListener());
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver, filter);
@@ -109,24 +134,6 @@ public class MainActivity extends BaseActivity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
     }
 
-    class NetListener implements NetReceiver.OnNetListener {
-
-        @Override
-        public Context getCxt() {
-            return MainActivity.this;
-        }
-
-        @Override
-        public void hasNet() {
-            mFlNoNet.setVisibility(View.GONE);
-        }
-
-        @Override
-        public void noNet() {
-            mFlNoNet.setVisibility(View.VISIBLE);
-        }
-    }
-
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
@@ -136,6 +143,9 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         if(receiver!= null) {
             unregisterReceiver(receiver);
+        }
+        if(mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()){
+            mCompositeSubscription.unsubscribe();
         }
         super.onDestroy();
     }
