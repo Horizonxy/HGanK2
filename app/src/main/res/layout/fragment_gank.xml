@@ -22,24 +22,4 @@
             android:layout_height="match_parent" />
     </com.chanven.lib.cptr.PtrClassicFrameLayout>
 
-    <com.horizon.gank.hgank.ui.widget.AnimationFrameLayout
-        android:id="@+id/afl_no_net"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tv_no_net"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#77000000"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:gravity="center"
-            android:text="无网络连接，点击设置"
-            android:padding="@dimen/normal_margin"
-            android:textColor="@color/white"
-            android:textSize="@dimen/normal_size" />
-    </com.horizon.gank.hgank.ui.widget.AnimationFrameLayout>
-
 </com.zhy.autolayout.AutoRelativeLayout>

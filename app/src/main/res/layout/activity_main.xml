@@ -1,43 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/tool_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                app:contentInsetEnd="0px"
+                app:contentInsetLeft="0px"
+                app:contentInsetRight="0px"
+                app:contentInsetStart="0px"
+                app:layout_scrollFlags="scroll|enterAlways" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabGravity="center"
+                app:tabIndicatorColor="@color/white"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="@color/white"
+                app:tabTextColor="#aaffffff" />
+
+        </android.support.design.widget.AppBarLayout>
+
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <com.horizon.gank.hgank.ui.widget.AnimationFrameLayout
+        android:id="@+id/afl_no_net"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/tool_bar"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentInsetStart="0px"
-            app:contentInsetLeft="0px"
-            app:contentInsetRight="0px"
-            app:contentInsetEnd="0px"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"/>
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="center"
-            app:tabIndicatorColor="@color/white"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/white"
-            app:tabTextColor="#aaffffff" />
-
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-</android.support.design.widget.CoordinatorLayout>
+            android:background="#77000000"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="3"
+            android:padding="@dimen/normal_margin"
+            android:text="无网络连接，点击设置"
+            android:textColor="@color/white"
+            android:textSize="@dimen/normal_size" />
+    </com.horizon.gank.hgank.ui.widget.AnimationFrameLayout>
+</RelativeLayout>

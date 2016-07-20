@@ -1,9 +1,7 @@
 package com.horizon.gank.hgank.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -26,7 +24,6 @@ import com.horizon.gank.hgank.model.bean.GanKData;
 import com.horizon.gank.hgank.model.db.CommonDaoImpl;
 import com.horizon.gank.hgank.presenter.GanKPresenter;
 import com.horizon.gank.hgank.ui.iview.GanKFragmentViewListener;
-import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
 import com.horizon.gank.hgank.util.GsonUtils;
 import com.horizon.gank.hgank.util.NetUtils;
 import com.horizon.gank.hgank.util.SimpleSubscriber;
@@ -40,7 +37,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -61,8 +57,6 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
     RecyclerView.ItemDecoration mItemDecoration;
     @Inject
     GanKPresenter mPresenter;
-    @Bind(R.id.afl_no_net)
-    AnimationFrameLayout mFlNoNet;
 
     private List<GanKData> mData;
     private int mPageNo;
@@ -200,22 +194,12 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
         mRefreshLayout.setLoadMoreEnable(true);
     }
 
-    @OnClick(R.id.afl_no_net)
-    void setNet(){
-        Intent intent = new Intent(Settings.ACTION_SETTINGS);
-        startActivity(intent);
-    }
-
     private void loadGankData() {
         if (NetUtils.isNetworkConnected(getContext())) {
-            if(mFlNoNet.getVisibility() == View.VISIBLE){
-                mFlNoNet.setVisibility(View.GONE);
-            }
+
             mPresenter.loadData();
         } else {
-            if(mFlNoNet.getVisibility() == View.GONE){
-                mFlNoNet.setVisibility(View.VISIBLE);
-            }
+
             loadCache();
         }
     }

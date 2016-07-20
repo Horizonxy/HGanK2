@@ -1,9 +1,11 @@
 package com.horizon.gank.hgank;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -14,8 +16,10 @@ import android.widget.TextView;
 
 import com.horizon.gank.hgank.receiver.NetReceiver;
 import com.horizon.gank.hgank.ui.adapter.GanKTabAdapter;
+import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
 import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.LogUtils;
+import com.horizon.gank.hgank.util.NetUtils;
 import com.horizon.gank.hgank.util.PreUtils;
 import com.horizon.gank.hgank.util.ThemeUtils;
 import com.jakewharton.rxbinding.view.RxView;
@@ -37,6 +41,8 @@ public class MainActivity extends BaseActivity {
     TabLayout mTabLayout;
     @Bind(R.id.viewpager)
     ViewPager mViewPager;
+    @Bind(R.id.afl_no_net)
+    AnimationFrameLayout mFlNoNet;
 
     private static final List<String> TITLES = Arrays.asList(new String[]{ "福利", "Android", "iOS", "前端", "休息视频", "App", "瞎推荐", "拓展资源" });
     private  NetReceiver receiver;
@@ -71,6 +77,17 @@ public class MainActivity extends BaseActivity {
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
+        RxView.clicks(mFlNoNet)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                        startActivity(intent);
+                    }
+                });
+        mFlNoNet.setVisibility(NetUtils.isNetworkConnected(this) ? View.GONE : View.VISIBLE);
+
         receiver = new NetReceiver();
         receiver.setListener(new NetListener());
         IntentFilter filter = new IntentFilter();
@@ -101,12 +118,12 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void hasNet() {
-            LogUtils.e("无网络...");
+            mFlNoNet.setVisibility(View.GONE);
         }
 
         @Override
         public void noNet() {
-            LogUtils.e("有网络...");
+            mFlNoNet.setVisibility(View.VISIBLE);
         }
     }
 

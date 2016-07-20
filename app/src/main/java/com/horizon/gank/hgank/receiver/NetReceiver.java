@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 
-import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.NetUtils;
 import com.horizon.gank.hgank.util.SimpleSubscriber;
 
@@ -42,8 +41,8 @@ public class NetReceiver extends BroadcastReceiver {
                 }).subscribe(new SimpleSubscriber<String>(){
             @Override
             public void onNext(String obj) {
-                LogUtils.e("mListener == null? "+(mListener == null)+" obj: "+obj);
-                if(!NetUtils.isNetworkConnected(mListener.getCxt())){
+
+                if(NetUtils.isNetworkConnected(mListener.getCxt())){
                     mListener.hasNet();
                 } else {
                     mListener.noNet();

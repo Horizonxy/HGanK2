@@ -3,8 +3,8 @@ package com.horizon.gank.hgank.model.api;
 import com.horizon.gank.hgank.model.bean.GanKData;
 import com.horizon.gank.hgank.model.bean.GanKResult;
 
-import retrofit.http.GET;
-import retrofit.http.Path;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 import rx.Observable;
 
 
