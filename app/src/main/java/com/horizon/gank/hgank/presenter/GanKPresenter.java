@@ -9,6 +9,7 @@ import com.horizon.gank.hgank.util.SimpleSubscriber;
 import java.util.List;
 
 import rx.Subscription;
+import rx.functions.Action1;
 
 public class GanKPresenter extends BasePresenter{
 
@@ -22,30 +23,50 @@ public class GanKPresenter extends BasePresenter{
 
     public void loadData(){
         final int pageNo = vGank.getPageNo();
-        Subscription subscription = mGank.getGanKList(vGank.getType(), pageNo, new SimpleSubscriber<GanKResult<GanKData>>(){
-
-            @Override
-            public void onError(Throwable e) {
-                vGank.onFailure();
-            }
-
-            @Override
-            public void onNext(GanKResult<GanKData> obj) {
-                if (obj.isError()) {
-                    vGank.onFailure();
-                } else{
-                    List<GanKData> data = obj.getResults();
-                    if(data != null && data.size() > 0){
-                        vGank.onSuccess(data);
+        Subscription subscription = mGank.getGanKList(
+                vGank.getType(),
+                pageNo,
+                new Action1<GanKResult<GanKData>>() {
+                    @Override
+                    public void call(GanKResult<GanKData> ganKDataGanKResult) {
                         vGank.onCompleted(pageNo);
-                    } else {
-                        vGank.onFinish();
                     }
-                }
-            }
-        });
+                },
+                new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        vGank.onCompleted(pageNo);
+                    }
+                },
+                new SimpleSubscriber<GanKResult<GanKData>>() {
+
+                    @Override
+                    public void onError(Throwable e) {
+                        vGank.onFailure();
+                    }
+
+                    @Override
+                    public void onNext(GanKResult<GanKData> obj) {
+                        if(obj.isError()){
+                            vGank.onFailure();
+                        } else {
+                            dealData(obj.getResults());
+                        }
+                    }
+                });
 
         addSubscription(subscription);
     }
 
+    private void dealData(List<GanKData> data){
+        if (data == null) {
+            vGank.onFailure();
+            return;
+        }
+        if (data.size() > 0) {
+            vGank.onSuccess(data);
+        } else {
+            vGank.onFinish();
+        }
+    }
 }

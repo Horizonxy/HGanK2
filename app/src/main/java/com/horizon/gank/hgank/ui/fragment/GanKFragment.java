@@ -1,7 +1,6 @@
 package com.horizon.gank.hgank.ui.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -65,7 +64,6 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
     private Map<String, Object> mCacheMap = new HashMap<String, Object>();
     private String ATY = "gank_type_list_";
     private String DATA_TYPE;
-    private Handler mHandler;
 
     public static GanKFragment newInstance(String type) {
         GanKFragment fragment = new GanKFragment();
@@ -89,8 +87,6 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
         mCommonDao = new CommonDaoImpl(getContext());
         mCacheMap.put(CommonCacheVo.ATY, ATY);
         mCacheMap.put(CommonCacheVo.DATA_TYPE, DATA_TYPE);
-
-        mHandler = new Handler();
     }
 
     @Nullable
@@ -119,7 +115,7 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
                     loadGankData();
                 }
             });
-            mHandler.postDelayed(new Runnable() {
+            mRefreshLayout.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mRefreshLayout.autoRefresh(true);
@@ -188,18 +184,15 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
     public void onCompleted(int pageNo) {
         if(pageNo == 1){
             mRefreshLayout.refreshComplete();
-        } else {
-            mRefreshLayout.loadMoreComplete(true);
         }
         mRefreshLayout.setLoadMoreEnable(true);
+        mRefreshLayout.loadMoreComplete(true);
     }
 
     private void loadGankData() {
         if (NetUtils.isNetworkConnected(getContext())) {
-
             mPresenter.loadData();
         } else {
-
             loadCache();
         }
     }

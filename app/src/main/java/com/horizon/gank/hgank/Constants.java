@@ -2,6 +2,8 @@ package com.horizon.gank.hgank;
 
 public class Constants {
 
+	public static final int PAGE_SIZE = 20;
+
 	public static final String END_POIND = "http://gank.io";
 
 	public static final String BASE_DIR = "horizon_gank_5.0";
