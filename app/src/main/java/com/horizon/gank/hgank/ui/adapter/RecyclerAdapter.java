@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,16 +81,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .map(new Func1<Void, SmallPicInfo>() {
                     @Override
                     public SmallPicInfo call(Void aVoid) {
-                        imageView.setDrawingCacheEnabled(true);
-                        Bitmap bitmap = imageView.getDrawingCache();
-
                         int[] screenLocation = new int[2];
                         imageView.getLocationOnScreen(screenLocation);
+                        SmallPicInfo info = new SmallPicInfo(item, screenLocation[0], screenLocation[1], imageView.getWidth(), imageView.getHeight(), 0);
 
-                        SmallPicInfo info = new SmallPicInfo(item, screenLocation[0], screenLocation[1], imageView.getWidth(), imageView.getHeight(), 0, Bitmap.createBitmap(bitmap));
-
-                        imageView.setDrawingCacheEnabled(false);
-
+                        PictureDetailActivity.bmp = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
                         return info;
                     }
                 })

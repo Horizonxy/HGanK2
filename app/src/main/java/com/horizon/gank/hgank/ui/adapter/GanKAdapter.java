@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -70,20 +71,16 @@ public class GanKAdapter extends QuickAdapter<GanKData> {
 
         @Override
         public void onClick(View view) {
-            imageView.setDrawingCacheEnabled(true);
-            Bitmap bitmap = imageView.getDrawingCache();
-
             int[] screenLocation = new int[2];
             imageView.getLocationOnScreen(screenLocation);
+            SmallPicInfo info = new SmallPicInfo(data, screenLocation[0], screenLocation[1], imageView.getWidth(), imageView.getHeight(), 0);
 
-            SmallPicInfo info = new SmallPicInfo(data, screenLocation[0], screenLocation[1], imageView.getWidth(), imageView.getHeight(), 0, Bitmap.createBitmap(bitmap));
+            PictureDetailActivity.bmp = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
 
             Intent intent = new Intent(mCxt, PictureDetailActivity.class);
             intent.putExtra(Constants.BUNDLE_PIC_INFOS, info);
             mCxt.startActivity(intent);
             ((Activity)mCxt).overridePendingTransition(0, 0);
-
-            imageView.setDrawingCacheEnabled(false);
         }
     }
 

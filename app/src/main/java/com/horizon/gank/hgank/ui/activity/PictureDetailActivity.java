@@ -53,6 +53,7 @@ public class PictureDetailActivity extends Activity {
 
     private static final int DURATION = 250;
     private int screenWidth, screenHeight;
+    public static Bitmap bmp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +93,10 @@ public class PictureDetailActivity extends Activity {
         lp.height = smallPicInfo.height;
         ivDetail.setLayoutParams(lp);
 
-        Bitmap small = BitmapFactory.decodeByteArray(smallPicInfo.bmp, 0, smallPicInfo.bmp.length);
-        ivDetail.setImageBitmap(small);
+//        Bitmap small = BitmapFactory.decodeByteArray(smallPicInfo.bmp, 0, smallPicInfo.bmp.length);
+        if(bmp == null) {
+            ivDetail.setImageBitmap(bmp);
+        }
 
         int smallDeltaX = smallPicInfo.left - (screenWidth - smallPicInfo.width) / 2;
         int smallDeltaY = smallPicInfo.top - (screenHeight - smallPicInfo.height + DisplayUtils.getStatusBarHeight(PictureDetailActivity.this)) / 2;
@@ -223,6 +226,13 @@ public class PictureDetailActivity extends Activity {
                 PictureDetailActivity.super.onBackPressed();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        smallPicInfo = null;
+        bmp = null;
     }
 
     @Override
