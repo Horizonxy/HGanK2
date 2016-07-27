@@ -1,11 +1,13 @@
 package com.horizon.gank.hgank;
 
+import android.Manifest;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 
 import com.horizon.gank.hgank.model.api.ApiService;
 import com.horizon.gank.hgank.util.FileUtils;
+import com.horizon.gank.hgank.util.PermissionUtils;
 import com.horizon.gank.hgank.util.RetrofitUtil;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -70,15 +72,16 @@ public class Application extends android.app.Application {
                     if (!imgFile.exists()) {
                         imgFile.mkdirs();
                     }
-                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(application)
-                            .threadPoolSize(20)
+                    ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(application)
+                            .threadPoolSize(5)
                             .threadPriority(Thread.NORM_PRIORITY - 2)
                             .denyCacheImageMultipleSizesInMemory()
                             .tasksProcessingOrder(QueueProcessingType.LIFO)
-                            .discCache(new UnlimitedDiskCache(imgFile))
-                            .writeDebugLogs()
-                            .build();
-                    imageLoader.init(config);
+                            .writeDebugLogs();
+                    if(PermissionUtils.checkPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE})){
+                        builder.discCache(new UnlimitedDiskCache(imgFile));
+                    }
+                    imageLoader.init(builder.build());
                 }
             }
         }

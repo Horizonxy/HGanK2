@@ -1,17 +1,21 @@
 package com.horizon.gank.hgank.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.horizon.gank.hgank.Application;
+import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.MainActivity;
 import com.horizon.gank.hgank.R;
+import com.horizon.gank.hgank.util.PermissionUtils;
 import com.horizon.gank.hgank.util.SystemStatusManager;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 
@@ -46,11 +50,27 @@ public class WelcomeActivity extends Activity {
             vWelcome.setImageResource(R.mipmap.welcome);
         }
 
+        init();
+    }
+
+    private void init() {
+        if(Build.VERSION.SDK_INT >= 23){
+            String[] permissions = new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            if(PermissionUtils.checkPermissions(this, permissions)){
+                start();
+            } else {
+                PermissionUtils.requestPermissions(this, permissions);
+            }
+        } else {
+            start();
+        }
+    }
+
+    private void start(){
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.splash_start);
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-            }
+            public void onAnimationStart(Animation animation) { }
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -60,10 +80,16 @@ public class WelcomeActivity extends Activity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
+            public void onAnimationRepeat(Animation animation) { }
         });
         vWelcome.startAnimation(anim);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == Constants.REQ_PERMISSIONS){
+            start();
+        }
+    }
 }

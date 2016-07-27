@@ -76,7 +76,11 @@ public class PictureDetailActivity extends Activity {
         File file = diskCache.get(smallPicInfo.data.getUrl());
         if (file != null && file.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            loadOnCache(bitmap);
+            if(bitmap == null){
+                loadOnNetwork();
+            } else {
+                loadOnCache(bitmap);
+            }
         } else {
             loadOnNetwork();
         }

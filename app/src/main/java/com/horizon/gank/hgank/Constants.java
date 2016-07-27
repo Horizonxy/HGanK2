@@ -31,4 +31,5 @@ public class Constants {
 	public final static String BUNDLE_THEME = "bundle_theme";
 	public final static String BUNDLE_THEME_BTN_COLOR = "bundle_theme_btn_color";
 
+	public static final int REQ_PERMISSIONS = 1000;
 }

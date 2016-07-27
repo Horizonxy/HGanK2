@@ -1,11 +1,13 @@
 package com.horizon.gank.hgank.ui.widget.web;
 
+import android.Manifest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 
 import com.horizon.gank.hgank.Application;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.util.FileUtils;
+import com.horizon.gank.hgank.util.PermissionUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -28,7 +30,7 @@ public class WebViewClient extends android.webkit.WebViewClient implements  WebV
 
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-        if (isImage(url)) {
+        if (isImage(url) && PermissionUtils.checkPermissions(view.getContext(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
             File image = FileUtils.findFile(IMG_CACHE, url.substring(url.lastIndexOf("/") + 1));
             if (image != null) {
                 try {
