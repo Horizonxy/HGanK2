@@ -21,4 +21,7 @@ public class Constants {
 	public final static String BUNDLE_OLD_THEME_COLOR = "bundle_theme_color";
 
 	public static final int REQ_PERMISSIONS = 1000;
+
+	public static final long TIME_OUT = 10;
+	public static final String TEST_HOST = "www.baidu.com";
 }

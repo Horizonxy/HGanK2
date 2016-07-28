@@ -145,7 +145,7 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
 
     @Override
     public void onFailure() {
-        Snackbar.make(mRefreshLayout, "加载出问题了~~", Snackbar.LENGTH_SHORT).show();
+        //Snackbar.make(mRefreshLayout, "加载出问题了~~", Snackbar.LENGTH_SHORT).show();
         mRefreshLayout.loadMoreComplete(false);
     }
 
@@ -216,7 +216,7 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleSubscriber<List<GanKData>>(){
                     @Override
-                    public void onNext(List<GanKData> list) {
+                    public void onNextRx(List<GanKData> list) {
                         if(list != null){
                             if (pageNo == 1) {
                                 mData.clear();
@@ -229,6 +229,7 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
                     }
                     @Override
                     public void onError(Throwable e) {
+                        super.onError(e);
                         GanKFragment.this.onCompleted(pageNo);
                     }
                 });

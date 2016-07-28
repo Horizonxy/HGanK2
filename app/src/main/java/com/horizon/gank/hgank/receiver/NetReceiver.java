@@ -37,8 +37,7 @@ public class NetReceiver extends BroadcastReceiver {
                     }
                 }).subscribe(new SimpleSubscriber<String>(){
             @Override
-            public void onNext(String obj) {
-
+            public void onNextRx(String obj) {
                 BusEvent.NetEvent event = new BusEvent.NetEvent();
                 event.setHasNet(NetUtils.isNetworkConnected(context));
                 Bus.getDefault().post(event);

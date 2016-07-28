@@ -42,11 +42,12 @@ public class GanKPresenter extends BasePresenter{
 
                     @Override
                     public void onError(Throwable e) {
+                        super.onError(e);
                         vGank.onFailure();
                     }
 
                     @Override
-                    public void onNext(GanKResult<GanKData> obj) {
+                    public void onNextRx(GanKResult<GanKData> obj) {
                         if(obj.isError()){
                             vGank.onFailure();
                         } else {

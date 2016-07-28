@@ -18,10 +18,6 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.io.File;
 
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class Application extends android.app.Application {
 
     public int SCREENWIDTH, SCREENHEIGHT;
@@ -32,7 +28,7 @@ public class Application extends android.app.Application {
 //    @Inject
     ImageLoader imageLoader;
 //    @Inject
-    Resources res;
+//    Resources res;
 //    @Inject
     ApiService apiService;
 
@@ -96,13 +92,7 @@ public class Application extends android.app.Application {
         if(apiService == null) {
             synchronized (Application.class) {
                 if (apiService == null) {
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .client(RetrofitUtil.createOkHttpClient())
-                            .baseUrl(Constants.END_POIND)
-                            .addConverterFactory(GsonConverterFactory.create(RetrofitUtil.createGson()))
-                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                            .build();
-                    apiService = retrofit.create(ApiService.class);
+                    apiService = RetrofitUtil.createRetrofit().create(ApiService.class);
                 }
             }
         }
