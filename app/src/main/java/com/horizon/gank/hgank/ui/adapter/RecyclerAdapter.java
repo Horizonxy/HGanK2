@@ -18,6 +18,7 @@ import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.model.bean.GanKData;
 import com.horizon.gank.hgank.ui.activity.PictureDetailActivity;
+import com.horizon.gank.hgank.util.DisplayUtils;
 import com.horizon.gank.hgank.util.SmallPicInfo;
 import com.jakewharton.rxbinding.view.RxView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -65,7 +66,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 int width = loadedImage.getWidth();
                 int height = loadedImage.getHeight();
-                float scale = Application.application.SCREENWIDTH / 2 * 1f / width;
+                float scale = DisplayUtils.screenWidth(mCxt) / 2 * 1f / width;
 
                 Matrix matrix = new Matrix();
                 matrix.setScale(scale, scale);

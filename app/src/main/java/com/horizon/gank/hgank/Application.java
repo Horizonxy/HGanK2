@@ -1,9 +1,7 @@
 package com.horizon.gank.hgank;
 
 import android.Manifest;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.util.DisplayMetrics;
 
 import com.horizon.gank.hgank.model.api.ApiService;
 import com.horizon.gank.hgank.util.FileUtils;
@@ -20,27 +18,17 @@ import java.io.File;
 
 public class Application extends android.app.Application {
 
-    public int SCREENWIDTH, SCREENHEIGHT;
     public static Application application;
 
-//    @Inject
     DisplayImageOptions defaultOptions;
-//    @Inject
     ImageLoader imageLoader;
-//    @Inject
-//    Resources res;
-//    @Inject
     ApiService apiService;
 
     @Override
     public void onCreate() {
         super.onCreate();
-//        DaggerAppComponent.builder().appModule(new AppModule(this)).build().inject(this);
 
         application = this;
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        SCREENHEIGHT = displayMetrics.heightPixels;
-        SCREENWIDTH = displayMetrics.widthPixels;
     }
 
     public DisplayImageOptions getDefaultOptions() {
@@ -82,10 +70,6 @@ public class Application extends android.app.Application {
             }
         }
         return imageLoader;
-    }
-
-    public Resources getRes(){
-        return  application.getRes();
     }
 
     public ApiService getApiService(){

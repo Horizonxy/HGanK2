@@ -17,6 +17,7 @@ import com.horizon.gank.hgank.model.bean.GanKData;
 import com.horizon.gank.hgank.ui.activity.PictureDetailActivity;
 import com.horizon.gank.hgank.ui.adapter.recyclerview.BaseAdapterHelper;
 import com.horizon.gank.hgank.ui.adapter.recyclerview.QuickAdapter;
+import com.horizon.gank.hgank.util.DisplayUtils;
 import com.horizon.gank.hgank.util.SmallPicInfo;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -46,7 +47,7 @@ public class GanKAdapter extends QuickAdapter<GanKData> {
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 int width = loadedImage.getWidth();
                 int height = loadedImage.getHeight();
-                float scale = Application.application.SCREENWIDTH/2 * 1f / width;
+                float scale = DisplayUtils.screenWidth(mCxt)/2 * 1f / width;
 
                 Matrix matrix = new Matrix();
                 matrix.setScale(scale,scale);

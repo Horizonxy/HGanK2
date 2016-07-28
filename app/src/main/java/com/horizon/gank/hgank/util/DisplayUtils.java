@@ -1,11 +1,30 @@
 package com.horizon.gank.hgank.util;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 import java.lang.reflect.Field;
 
 public class DisplayUtils {
+
+    private static int mScreenWidth, mScreenHeight;
+
+    public static int screenWidth(Context cxt){
+        if(mScreenWidth == 0){
+            DisplayMetrics displayMetrics = cxt.getResources().getDisplayMetrics();
+            mScreenHeight = displayMetrics.heightPixels;
+            mScreenWidth = displayMetrics.widthPixels;
+        }
+        return mScreenWidth;
+    }
+
+    public static int screenHeight(Context cxt){
+        if(mScreenHeight == 0){
+            screenWidth(cxt);
+        }
+        return mScreenHeight;
+    }
 
     public static int getStatusBarHeight(Context context){
         try {

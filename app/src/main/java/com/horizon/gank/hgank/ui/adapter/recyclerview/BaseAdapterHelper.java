@@ -98,7 +98,7 @@ public class BaseAdapterHelper extends RecyclerView.ViewHolder {
      */
     public BaseAdapterHelper setTextColorRes(int viewId, int textColorRes) {
         TextView view = retrieveView(viewId);
-        view.setTextColor(Application.application.getRes().getColor(textColorRes));
+        view.setTextColor(Application.application.getResources().getColor(textColorRes));
         return this;
     }
 

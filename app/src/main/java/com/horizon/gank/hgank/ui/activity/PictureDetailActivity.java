@@ -65,8 +65,8 @@ public class PictureDetailActivity extends Activity {
         rlRoot.setAlpha(0f);
         rlRoot.animate().alpha(1f).setDuration(DURATION);
 
-        screenWidth = Application.application.SCREENWIDTH;
-        screenHeight = Application.application.SCREENHEIGHT;
+        screenWidth = DisplayUtils.screenWidth(this);
+        screenHeight = DisplayUtils.screenHeight(this);
 
         smallPicInfo = (SmallPicInfo) getIntent().getSerializableExtra(Constants.BUNDLE_PIC_INFOS);
 
