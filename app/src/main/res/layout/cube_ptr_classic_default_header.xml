@@ -15,14 +15,14 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
+            <com.horizon.gank.hgank.ui.widget.ColorTextView
                 android:id="@+id/ptr_classic_header_rotate_view_header_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/colorPrimary"
                 android:textSize="12sp" />
 
-            <TextView
+            <com.horizon.gank.hgank.ui.widget.ColorTextView
                 android:id="@+id/ptr_classic_header_rotate_view_header_last_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,14 +38,14 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/ptr_classic_header_rotate_view_header_text">
 
-            <ImageView
+            <com.horizon.gank.hgank.ui.widget.ColorTextView
                 android:id="@+id/ptr_classic_header_rotate_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/ptr_rotate_arrow" />
 
-            <ProgressBar
+            <com.horizon.gank.hgank.ui.widget.ColorProgressBar
                 android:id="@+id/ptr_classic_header_rotate_view_progressbar"
                 style="?android:attr/progressBarStyleSmallInverse"
                 android:layout_width="wrap_content"

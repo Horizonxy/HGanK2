@@ -11,7 +11,10 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.horizon.gank.hgank.R;
+import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.ThemeUtils;
+import com.mcxiaoke.bus.Bus;
+import com.mcxiaoke.bus.annotation.BusReceiver;
 
 public class FlashBackGroundTextView extends TextView {
 
@@ -24,14 +27,21 @@ public class FlashBackGroundTextView extends TextView {
 
 	public FlashBackGroundTextView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		registerChange();
 	}
 
 	public FlashBackGroundTextView(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
+		super(context, attrs);
+		registerChange();
 	}
 
 	public FlashBackGroundTextView(Context context) {
-		this(context, null);
+		super(context);
+		registerChange();
+	}
+
+	protected void registerChange() {
+		Bus.getDefault().register(this);
 	}
 
 	@Override
@@ -48,6 +58,14 @@ public class FlashBackGroundTextView extends TextView {
 				mGradientMatrix = new Matrix();
 			}
 		}
+	}
+
+	@BusReceiver
+	public void onThemeColorEvent(final BusEvent.ThemeColorEvent event){
+		mLinearGradient = new LinearGradient(-mViewWidth, 0, 0, 0,
+				new int[] {Color.WHITE, ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary), Color.WHITE}, null,
+				Shader.TileMode.CLAMP);
+		mPaint.setShader(mLinearGradient);
 	}
 
 	@Override

@@ -4,7 +4,7 @@
     android:layout_height="40dp" 
     android:gravity="center_horizontal">
     
-   <ProgressBar
+   <com.horizon.gank.hgank.ui.widget.ColorProgressBar
         android:id="@+id/loadmore_default_footer_progressbar"
         style="?android:attr/progressBarStyleSmallInverse"
         android:layout_width="wrap_content"
@@ -13,7 +13,7 @@
         android:visibility="gone"
         android:layout_gravity="center" />
 
-    <TextView
+    <com.horizon.gank.hgank.ui.widget.ColorTextView
         android:id="@+id/loadmore_default_footer_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

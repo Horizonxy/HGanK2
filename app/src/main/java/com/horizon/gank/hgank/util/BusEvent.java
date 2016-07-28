@@ -14,4 +14,17 @@ public class BusEvent {
             this.hasNet = hasNet;
         }
     }
+
+    @com.mcxiaoke.bus.annotation.BusEvent
+    public static class ThemeColorEvent{
+        private int color;
+
+        public int getColor() {
+            return color;
+        }
+
+        public void setColor(int color) {
+            this.color = color;
+        }
+    }
 }

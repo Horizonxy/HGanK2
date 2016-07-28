@@ -12,6 +12,7 @@ import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.model.bean.GanKData;
 import com.horizon.gank.hgank.ui.activity.WebViewActivity;
+import com.horizon.gank.hgank.ui.widget.ColorTextView;
 import com.jakewharton.rxbinding.view.RxView;
 
 import java.util.List;
@@ -73,7 +74,7 @@ public class RecyclerNormalAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Bind(R.id.tv_user)
         TextView tvWho;
         @Bind(R.id.tv_title)
-        TextView tvDesc;
+        ColorTextView tvDesc;
         @Bind(R.id.ll_list_item)
         View vItem;
 

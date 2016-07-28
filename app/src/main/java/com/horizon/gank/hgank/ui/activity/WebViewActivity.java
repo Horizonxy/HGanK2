@@ -1,17 +1,20 @@
 package com.horizon.gank.hgank.ui.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.horizon.gank.hgank.BaseActivity;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
-import com.horizon.gank.hgank.ui.widget.ColorHorizontalProgressBar;
 import com.horizon.gank.hgank.ui.widget.FlashBackGroundTextView;
 import com.horizon.gank.hgank.ui.widget.web.WebChromeClient;
 import com.horizon.gank.hgank.ui.widget.web.WebView;
@@ -33,7 +36,7 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     @Bind(R.id.web_view)
     WebView mWevView;
     @Bind(R.id.progress)
-    ColorHorizontalProgressBar mProgress;
+    ProgressBar mProgress;
 
     boolean firstLoadAfter;
     String url;
@@ -57,7 +60,8 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
         mBtnLeft.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_mail_reply_all));
 
         int color = PreUtils.getInt(this, Constants.BUNDLE_OLD_THEME_COLOR, this.getResources().getColor(R.color.blue));
-        mProgress.setProgressColor(color);
+        ClipDrawable drawable = new ClipDrawable(new ColorDrawable(color), Gravity.LEFT, ClipDrawable.HORIZONTAL);
+        mProgress.setProgressDrawable(drawable);
 
         firstLoadAfter = true;
 

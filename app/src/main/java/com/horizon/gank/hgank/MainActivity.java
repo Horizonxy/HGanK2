@@ -20,6 +20,7 @@ import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.NetUtils;
 import com.horizon.gank.hgank.util.PreUtils;
+import com.horizon.gank.hgank.util.SystemStatusManager;
 import com.horizon.gank.hgank.util.ThemeUtils;
 import com.jakewharton.rxbinding.view.RxView;
 import com.mcxiaoke.bus.Bus;
@@ -50,19 +51,24 @@ public class MainActivity extends BaseActivity {
     private  NetReceiver receiver;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
+    private ImageView btnLeft;
+    private ActionBar ab;
+    private View topView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SystemStatusManager.setTranslucentStatusColor(this, ThemeUtils.getThemeColor(this, R.attr.colorPrimary));
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Bus.getDefault().register(this);
 
         setSupportActionBar(mToolBar);
-        ActionBar ab = getSupportActionBar();
+        ab = getSupportActionBar();
         ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        View topView = getLayoutInflater().inflate(R.layout.view_base_top, null);
+        topView = getLayoutInflater().inflate(R.layout.view_base_top, null);
         TextView tvTitle = (TextView) topView.findViewById(R.id.tv_title);
-        ImageView btnLeft = (ImageView) topView.findViewById(R.id.btn_left);
+        btnLeft = (ImageView) topView.findViewById(R.id.btn_left);
         tvTitle.setText("干货集中营");
         DrawableUtils.setImageDrawable(btnLeft, MaterialDesignIconic.Icon.gmi_palette, 30, PreUtils.getInt(this, Constants.BUNDLE_OLD_THEME_COLOR,
                 getResources().getColor(R.color.blue)));
@@ -99,22 +105,81 @@ public class MainActivity extends BaseActivity {
     }
 
     @BusReceiver
+    public void onThemeColorEvent(final BusEvent.ThemeColorEvent event){
+        SystemStatusManager.setTranslucentStatusColor(MainActivity.this, event.getColor());
+        DrawableUtils.setImageDrawable(btnLeft, MaterialDesignIconic.Icon.gmi_palette, 30, PreUtils.getInt(MainActivity.this, Constants.BUNDLE_OLD_THEME_COLOR,
+                getResources().getColor(R.color.blue)));
+        mToolBar.setBackgroundColor(event.getColor());
+        topView.setBackgroundColor(event.getColor());
+        mTabLayout.setBackgroundColor(event.getColor());
+        System.gc();
+
+//        final View rootView = getWindow().getDecorView();
+//        rootView.setDrawingCacheEnabled(true);
+//        rootView.buildDrawingCache(true);
+//
+//        final Bitmap localBitmap = Bitmap.createBitmap(rootView.getDrawingCache());
+//        rootView.setDrawingCacheEnabled(false);
+//        if (null != localBitmap && rootView instanceof ViewGroup) {
+//            final View tmpView = new View(getApplicationContext());
+//            tmpView.setBackgroundDrawable(new BitmapDrawable(getResources(), localBitmap));
+//            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//            ((ViewGroup) rootView).addView(tmpView, params);
+//
+//            tmpView.animate().alpha(0).setDuration(500).setListener(new Animator.AnimatorListener() {
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//                    //SystemStatusManager.setTranslucentStatusColor(MainActivity.this, event.getColor());
+//                    DrawableUtils.setImageDrawable(btnLeft, MaterialDesignIconic.Icon.gmi_palette, 30, PreUtils.getInt(MainActivity.this, Constants.BUNDLE_OLD_THEME_COLOR,
+//                            getResources().getColor(R.color.blue)));
+//                    mToolBar.setBackgroundColor(event.getColor());
+//                    topView.setBackgroundColor(event.getColor());
+//                    mTabLayout.setBackgroundColor(event.getColor());
+//                    System.gc();
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    ((ViewGroup) rootView).removeView(tmpView);
+//                    localBitmap.recycle();
+//                }
+//
+//                @Override
+//                public void onAnimationCancel(Animator animation) {
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animator animation) {
+//                }
+//            }).start();
+//        }
+    }
+
+    @BusReceiver
     public void onNetEvent(BusEvent.NetEvent event){
         mFlNoNet.setVisibility(event.isHasNet() ? View.GONE : View.VISIBLE);
     }
 
     void changeTheme(){
         int current = PreUtils.getInt(this, Constants.BUNDLE_THEME, 0);
+        int theme;
         if(current == 0 || current == R.style.red_theme){
-            PreUtils.putInt(this, Constants.BUNDLE_THEME, R.style.blue_theme);
+            theme =  R.style.blue_theme;
         } else {
-            PreUtils.putInt(this, Constants.BUNDLE_THEME, R.style.red_theme);
+            theme = R.style.red_theme;
         }
         PreUtils.putInt(this, Constants.BUNDLE_OLD_THEME_COLOR, ThemeUtils.getThemeColor(this, R.attr.colorPrimary));
-        finish();
-        startActivity(getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage(getBaseContext().getPackageName()));
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+        setTheme(theme);
+        PreUtils.putInt(this, Constants.BUNDLE_THEME, theme);
+
+        BusEvent.ThemeColorEvent event = new BusEvent.ThemeColorEvent();
+        event.setColor(ThemeUtils.getThemeColor(this, R.attr.colorPrimary));
+        Bus.getDefault().post(event);
+
+//        finish();
+//        startActivity(getBaseContext().getPackageManager()
+//                .getLaunchIntentForPackage(getBaseContext().getPackageName()));
+//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
     }
 
     @Override

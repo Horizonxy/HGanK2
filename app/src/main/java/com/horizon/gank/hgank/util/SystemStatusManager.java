@@ -110,6 +110,7 @@ public class SystemStatusManager {
     @SuppressLint({ "InlinedApi", "NewApi" })
 	public static void setTranslucentStatusColor(Activity aty, int color) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			aty.getWindow().getDecorView().setFitsSystemWindows(true);
 			// 透明状态栏
 			aty.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 			// 透明导航栏
@@ -118,7 +119,6 @@ public class SystemStatusManager {
 			tintManager.setStatusBarTintEnabled(true);
 			// 设置状态栏的颜色
 			tintManager.setStatusBarTintColor(color);
-			aty.getWindow().getDecorView().setFitsSystemWindows(true);
 		}
 	}
 
@@ -126,6 +126,7 @@ public class SystemStatusManager {
 	@SuppressLint({ "InlinedApi", "NewApi" })
 	public static void setTranslucentStatusRes(Activity aty, int resId) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			aty.getWindow().getDecorView().setFitsSystemWindows(true);
 			// 透明状态栏
 			aty.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 			// 透明导航栏
@@ -134,7 +135,6 @@ public class SystemStatusManager {
 			tintManager.setStatusBarTintEnabled(true);
 			// 设置状态栏的颜色
 			tintManager.setStatusBarTintResource(resId);
-			aty.getWindow().getDecorView().setFitsSystemWindows(true);
 		}
 	}
 	

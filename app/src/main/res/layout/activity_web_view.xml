@@ -18,7 +18,7 @@
         android:layerType="software"
         android:scrollbars="none" />
 
-    <com.horizon.gank.hgank.ui.widget.ColorHorizontalProgressBar
+    <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:id="@+id/progress"
         android:layout_width="match_parent"
