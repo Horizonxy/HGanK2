@@ -6,18 +6,19 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.horizon.gank.hgank.BaseActivity;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
+import com.horizon.gank.hgank.ui.widget.ColorHorizontalProgressBar;
 import com.horizon.gank.hgank.ui.widget.FlashBackGroundTextView;
 import com.horizon.gank.hgank.ui.widget.web.WebChromeClient;
 import com.horizon.gank.hgank.ui.widget.web.WebView;
 import com.horizon.gank.hgank.ui.widget.web.WebViewClient;
 import com.horizon.gank.hgank.ui.widget.web.WebViewView;
 import com.horizon.gank.hgank.util.DrawableUtils;
+import com.horizon.gank.hgank.util.PreUtils;
 import com.jakewharton.rxbinding.view.RxView;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
@@ -32,7 +33,7 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     @Bind(R.id.web_view)
     WebView mWevView;
     @Bind(R.id.progress)
-    ProgressBar mProgress;
+    ColorHorizontalProgressBar mProgress;
 
     boolean firstLoadAfter;
     String url;
@@ -54,6 +55,9 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
 
         mTvTitle.setmAnimating(false);
         mBtnLeft.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_mail_reply_all));
+
+        int color = PreUtils.getInt(this, Constants.BUNDLE_OLD_THEME_COLOR, this.getResources().getColor(R.color.blue));
+        mProgress.setProgressColor(color);
 
         firstLoadAfter = true;
 

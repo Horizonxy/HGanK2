@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 
+import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.NetUtils;
-import com.horizon.gank.hgank.util.RxBus;
 import com.horizon.gank.hgank.util.SimpleSubscriber;
+import com.mcxiaoke.bus.Bus;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -38,9 +39,9 @@ public class NetReceiver extends BroadcastReceiver {
             @Override
             public void onNext(String obj) {
 
-                RxBus.NetEvent event = new RxBus.NetEvent();
+                BusEvent.NetEvent event = new BusEvent.NetEvent();
                 event.setHasNet(NetUtils.isNetworkConnected(context));
-                RxBus.getInstance().send(event);
+                Bus.getDefault().post(event);
             }
         });
     }

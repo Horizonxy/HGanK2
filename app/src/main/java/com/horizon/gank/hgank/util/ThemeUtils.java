@@ -12,4 +12,5 @@ public class ThemeUtils {
         typedArray.recycle();
         return color;
     }
+
 }

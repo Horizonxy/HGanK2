@@ -18,14 +18,13 @@
         android:layerType="software"
         android:scrollbars="none" />
 
-    <ProgressBar
+    <com.horizon.gank.hgank.ui.widget.ColorHorizontalProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:id="@+id/progress"
         android:layout_width="match_parent"
         android:layout_height="6px"
         android:max="100"
-        android:visibility="gone"
-        android:progressDrawable="@drawable/progressbar_style" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_other"

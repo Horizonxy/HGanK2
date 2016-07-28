@@ -16,12 +16,14 @@ import android.widget.TextView;
 import com.horizon.gank.hgank.receiver.NetReceiver;
 import com.horizon.gank.hgank.ui.adapter.GanKTabAdapter;
 import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
+import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.NetUtils;
 import com.horizon.gank.hgank.util.PreUtils;
-import com.horizon.gank.hgank.util.RxBus;
 import com.horizon.gank.hgank.util.ThemeUtils;
 import com.jakewharton.rxbinding.view.RxView;
+import com.mcxiaoke.bus.Bus;
+import com.mcxiaoke.bus.annotation.BusReceiver;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
 import java.util.Arrays;
@@ -30,10 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends BaseActivity {
@@ -56,6 +55,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Bus.getDefault().register(this);
 
         setSupportActionBar(mToolBar);
         ActionBar ab = getSupportActionBar();
@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity {
         TextView tvTitle = (TextView) topView.findViewById(R.id.tv_title);
         ImageView btnLeft = (ImageView) topView.findViewById(R.id.btn_left);
         tvTitle.setText("干货集中营");
-        DrawableUtils.setImageDrawable(btnLeft, MaterialDesignIconic.Icon.gmi_palette, 30, PreUtils.getInt(this, Constants.BUNDLE_THEME_BTN_COLOR,
+        DrawableUtils.setImageDrawable(btnLeft, MaterialDesignIconic.Icon.gmi_palette, 30, PreUtils.getInt(this, Constants.BUNDLE_OLD_THEME_COLOR,
                 getResources().getColor(R.color.blue)));
         ab.setCustomView(topView);
 
@@ -92,32 +92,15 @@ public class MainActivity extends BaseActivity {
                 });
         mFlNoNet.setVisibility(NetUtils.isNetworkConnected(this) ? View.GONE : View.VISIBLE);
 
-        Subscription subscription = RxBus.getInstance().toObservable(RxBus.NetEvent.class)
-                .filter(new Func1<RxBus.NetEvent, Boolean>() {
-                    @Override
-                    public Boolean call(RxBus.NetEvent netEvent) {
-                        return netEvent != null;
-                    }
-                })
-                .map(new Func1<RxBus.NetEvent, Boolean>() {
-                    @Override
-                    public Boolean call(RxBus.NetEvent netEvent) {
-                        return netEvent.isHasNet();
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        mFlNoNet.setVisibility(aBoolean ? View.GONE : View.VISIBLE);
-                    }
-                });
-        mCompositeSubscription.add(subscription);
-
         receiver = new NetReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver, filter);
+    }
+
+    @BusReceiver
+    public void onNetEvent(BusEvent.NetEvent event){
+        mFlNoNet.setVisibility(event.isHasNet() ? View.GONE : View.VISIBLE);
     }
 
     void changeTheme(){
@@ -127,7 +110,7 @@ public class MainActivity extends BaseActivity {
         } else {
             PreUtils.putInt(this, Constants.BUNDLE_THEME, R.style.red_theme);
         }
-        PreUtils.putInt(this, Constants.BUNDLE_THEME_BTN_COLOR, ThemeUtils.getThemeColor(this, R.attr.colorPrimary));
+        PreUtils.putInt(this, Constants.BUNDLE_OLD_THEME_COLOR, ThemeUtils.getThemeColor(this, R.attr.colorPrimary));
         finish();
         startActivity(getBaseContext().getPackageManager()
                 .getLaunchIntentForPackage(getBaseContext().getPackageName()));
@@ -147,6 +130,7 @@ public class MainActivity extends BaseActivity {
         if(mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()){
             mCompositeSubscription.unsubscribe();
         }
+        Bus.getDefault().unregister(this);
         super.onDestroy();
     }
 }
