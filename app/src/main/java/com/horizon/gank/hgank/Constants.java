@@ -1,5 +1,8 @@
 package com.horizon.gank.hgank;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Constants {
 
 	public static final int PAGE_SIZE = 20;
@@ -23,5 +26,53 @@ public class Constants {
 	public static final int REQ_PERMISSIONS = 1000;
 
 	public static final long TIME_OUT = 10;
-	public static final String TEST_HOST = "www.baidu.com";
+
+	public static enum Theme {
+		RED(R.style.red_theme, Application.application.getResources().getColor(R.color.red)),
+		BLUE(R.style.blue_theme, Application.application.getResources().getColor(R.color.blue)),
+		BLACK(R.style.black_theme, Application.application.getResources().getColor(R.color.black)),
+		YELLOW(R.style.yellow_theme, Application.application.getResources().getColor(R.color.yellow)),
+		GREEN(R.style.green_theme, Application.application.getResources().getColor(R.color.green)),
+		PURPLE(R.style.purple_theme, Application.application.getResources().getColor(R.color.purple)),
+		PURPLE_RED(R.style.purple_red_theme, Application.application.getResources().getColor(R.color.purple_red)),
+		COFFEE(R.style.coffee_theme, Application.application.getResources().getColor(R.color.coffee));
+
+		private int theme;
+		private int color;
+
+		Theme(int theme, int color) {
+			this.theme = theme;
+			this.color = color;
+		}
+
+		public static Theme byColor(int color){
+			for (Theme theme:values()){
+				if(theme.getColor() == color){
+					return theme;
+				}
+			}
+			return RED;
+		}
+
+		public int getTheme() {
+			return theme;
+		}
+
+		public void setTheme(int theme) {
+			this.theme = theme;
+		}
+
+		public int getColor() {
+			return color;
+		}
+
+		public void setColor(int color) {
+			this.color = color;
+		}
+
+		public static List<Theme> list(){
+			return Arrays.asList(values());
+		}
+	}
+
 }

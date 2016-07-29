@@ -16,5 +16,21 @@
     <!-- 标题背景 -->
     <color name="title_bg">#dbdbdb</color>
 
-    <color name="main">#d6204b</color>
+    <!--红色-->
+    <color name="red">#d6204b</color>
+
+    <!--黄色-->
+    <color name="yellow">#ffc125</color>
+
+    <!--紫色-->
+    <color name="purple">#4b0082</color>
+
+    <!--绿色-->
+    <color name="green">#008b00</color>
+
+    <!--紫红-->
+    <color name="purple_red">#ff00ff</color>
+
+    <!--紫红-->
+    <color name="coffee">#d2691e</color>
 </resources>

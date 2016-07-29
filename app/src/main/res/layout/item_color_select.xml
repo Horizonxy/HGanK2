@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.horizon.gank.hgank.ui.widget.ColorSelectView
+        xmlns:color = "http://schemas.android.com/apk/res-auto"
+        android:id="@+id/item_color"
+        android:layout_width="160px"
+        android:layout_height="160px"
+        color:color="?attr/colorPrimary"
+        android:layout_gravity="center"
+        color:border_width="8px"
+        color:radius="80px"
+        color:in_radius="58px"/>
+
+</com.zhy.autolayout.AutoFrameLayout>

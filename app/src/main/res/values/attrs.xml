@@ -26,9 +26,9 @@
         <attr name="ptr_rotate_ani_time" format="integer" />
     </declare-styleable>
 
-
+    <attr name="border_width" format="dimension"/>
     <declare-styleable name="XCRoundImageView">
-        <attr name="border_width" format="dimension"/>
+        <attr name="border_width"/>
         <attr name="border_color" format="color"/>
         <attr name="type" format="enum">
             <enum name="circle" value="0"/>
@@ -36,5 +36,12 @@
             <enum name="oval" value="2"/>
         </attr>
         <attr name="round_radius" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="ColorSelectView">
+        <attr name="color" format="color"/>
+        <attr name="radius" format="dimension" />
+        <attr name="border_width"/>
+        <attr name="in_radius" format="dimension" />
     </declare-styleable>
 </resources>

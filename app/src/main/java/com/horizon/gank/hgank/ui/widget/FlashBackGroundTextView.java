@@ -63,7 +63,7 @@ public class FlashBackGroundTextView extends TextView {
 	@BusReceiver
 	public void onThemeColorEvent(final BusEvent.ThemeColorEvent event){
 		mLinearGradient = new LinearGradient(-mViewWidth, 0, 0, 0,
-				new int[] {Color.WHITE, ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary), Color.WHITE}, null,
+				new int[] {Color.WHITE, event.getColor(), Color.WHITE}, null,
 				Shader.TileMode.CLAMP);
 		mPaint.setShader(mLinearGradient);
 	}
