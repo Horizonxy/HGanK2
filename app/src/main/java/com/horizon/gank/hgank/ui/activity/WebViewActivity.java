@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -20,9 +19,12 @@ import com.horizon.gank.hgank.ui.widget.web.WebChromeClient;
 import com.horizon.gank.hgank.ui.widget.web.WebView;
 import com.horizon.gank.hgank.ui.widget.web.WebViewClient;
 import com.horizon.gank.hgank.ui.widget.web.WebViewView;
+import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.PreUtils;
 import com.jakewharton.rxbinding.view.RxView;
+import com.mcxiaoke.bus.Bus;
+import com.mcxiaoke.bus.annotation.BusReceiver;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
 import java.util.concurrent.TimeUnit;
@@ -34,7 +36,7 @@ import rx.functions.Action1;
 public class WebViewActivity extends BaseActivity implements WebViewView {
 
     @Bind(R.id.web_view)
-    WebView mWevView;
+    WebView mWebView;
     @Bind(R.id.progress)
     ProgressBar mProgress;
 
@@ -55,6 +57,15 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
         ButterKnife.bind(this);
+        Bus.getDefault().register(this);
+
+        url = getIntent().getStringExtra(Constants.BUNDLE_WEBVIEW_URL);
+        mHasVideo = getIntent().getBooleanExtra(Constants.BUNDLE_WEBVIEW_VEDIO, false);
+        if(url != null) {
+            if (!url.startsWith("http")) {
+                url = "http://".concat(url);
+            }
+        }
 
         mTvTitle.setmAnimating(false);
         mBtnLeft.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_mail_reply_all));
@@ -65,18 +76,10 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
 
         firstLoadAfter = true;
 
-        mWevView.setWebChromeClient(new WebChromeClient(this));
-        mWevView.setWebViewClient(new WebViewClient(this));
+        mWebView.setWebChromeClient(new WebChromeClient(this));
+        mWebView.setWebViewClient(new WebViewClient(this));
 
-        url = getIntent().getStringExtra(Constants.BUNDLE_WEBVIEW_URL);
-        mHasVideo = getIntent().getBooleanExtra(Constants.BUNDLE_WEBVIEW_VEDIO, false);
-
-        if(url != null) {
-            if(!url.startsWith("http")){
-                url = "http://".concat(url);
-            }
-            firstLoad();
-        }
+        firstLoad();
 
         RxView.clicks(tvOther)
                 .throttleFirst(1, TimeUnit.SECONDS)
@@ -85,23 +88,21 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
                     public void call(Void aVoid) {
                         Intent intent = new Intent();
                         intent.setAction(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(mWevView.getUrl()));
+                        intent.setData(Uri.parse(mWebView.getUrl()));
                         startActivity(intent);
                     }
                 });
-
-        RxView.clicks(mBtnLeft)
-                .throttleFirst(1, TimeUnit.SECONDS)
+        RxView.clicks(mBtnLeft).throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        back();
+                        finish();
                     }
                 });
     }
 
     private void firstLoad(){
-        mWevView.loadUrl(url);
+        mWebView.loadUrl(url);
     }
 
     @Override
@@ -115,61 +116,44 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
         }
     }
 
+
     @Override
     protected void onResume() {
-        mWevView.onResume();
-        mWevView.resumeTimers();
+        mWebView.onResume();
+        mWebView.resumeTimers();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        mWevView.onPause();
-        mWevView.pauseTimers();
+        mWebView.onPause();
+        mWebView.pauseTimers();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        mWevView.stopLoading();
-        mWevView.setVisibility(View.GONE);
+        mWebView.stopLoading();
+        mWebView.setVisibility(View.GONE);
+        Bus.getDefault().unregister(this);
         super.onDestroy();
     }
 
+    @BusReceiver
+    public void onNetEvent(BusEvent.NetEvent event){
+        mWebView.setCacheMode();
+    }
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_BACK:
-                    back();
-                    return true;
-                default:
-                    break;
-            }
-        }
-        return super.onKeyDown(keyCode, event);
+    public void onBackPressed() {
+        back();
     }
 
     public void back(){
-        if (url != null) {
-            if(url.equals(mWevView.getUrl())){
-                finish();
-            } else if (null != mWevView.getUrl() && mWevView.getUrl().startsWith("data:")) {//页面请求失败，报错
-                if (mWevView.canGoBackOrForward(-2)) {
-                    mWevView.goBackOrForward(-2);
-                    finish();
-                } else if (mWevView.canGoBack()) {
-                    mWevView.goBack();
-                }else {
-                    finish();
-                }
-            } else if (mWevView.canGoBack()) {
-                mWevView.goBack();
-            } else {
-                finish();
-            }
-        } else if(mWevView.canGoBack()){
-            mWevView.goBack();
+        if(mWebView.getUrl().equals(url)){
+            finish();
+        } else if(mWebView.canGoBack()){
+            mWebView.goBack();
         } else {
             finish();
         }

@@ -1,6 +1,7 @@
 package com.horizon.gank.hgank.ui.widget.web;
 
 import android.Manifest;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 
@@ -19,7 +20,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class WebViewClient extends android.webkit.WebViewClient implements  WebViewView {
+public class WebViewClient extends android.webkit.WebViewClient{
 
     private static String IMG_CACHE = FileUtils.getEnvPath(Application.application, true, Constants.IMG_WEB_CACHE_DIR);
     WebViewView mWebView;
@@ -50,13 +51,13 @@ public class WebViewClient extends android.webkit.WebViewClient implements  WebV
     }
 
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//        if(url.startsWith("http")){
-//            view.loadUrl(url);
-//        }
-//
-//        return true;
-        return super.shouldOverrideUrlLoading(view, url);
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        return super.shouldOverrideUrlLoading(view, request);
+    }
+
+    @Override
+    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+        super.onReceivedError(view, errorCode, description, failingUrl);
     }
 
     @Override
@@ -88,22 +89,6 @@ public class WebViewClient extends android.webkit.WebViewClient implements  WebV
         return (null != suffix) && (suffix.equalsIgnoreCase("jpg") || suffix.equalsIgnoreCase("png") || suffix.equalsIgnoreCase("jpeg") ||
                 suffix.equalsIgnoreCase("bmp") || suffix.equalsIgnoreCase("gif"));
     }
-
-    @Override
-    public void onReceivedTitle(String title) {
-
-    }
-
-    @Override
-    public void onProgressChanged(int newProgress) {
-
-    }
-
-    @Override
-    public void firstLoadAfter() {
-
-    }
-
 
     class ImageInputStream extends BufferedInputStream {
 

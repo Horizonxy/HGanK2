@@ -9,8 +9,8 @@ android {
         applicationId "com.horizon.gank.hgank"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 6
-        versionName "6.0"
+        versionCode 8
+        versionName "8.0"
     }
     buildTypes {
         release {

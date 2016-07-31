@@ -1,43 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zhy.autolayout.AutoLinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.zhy.autolayout.AutoLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <include layout="@layout/view_base_top"/>
+    <include layout="@layout/view_base_top" />
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <com.horizon.gank.hgank.ui.widget.web.WebView
-        android:id="@+id/web_view"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layerType="software"
-        android:scrollbars="none" />
+        android:layout_height="match_parent">
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:id="@+id/progress"
-        android:layout_width="match_parent"
-        android:layout_height="6px"
-        android:max="100"
-        android:visibility="gone" />
+        <com.horizon.gank.hgank.ui.widget.web.WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layerType="software"
+            android:scrollbars="none" />
 
-    <TextView
-        android:id="@+id/tv_other"
-        android:layout_width="match_parent"
-        android:background="#aa000000"
-        android:textColor="@color/white"
-        android:layout_gravity="bottom"
-        android:visibility="gone"
-        android:singleLine="true"
-        android:text="无法播放？使用其他浏览器打开"
-        android:gravity="center"
-        android:textSize="@dimen/normal_size"
-        android:layout_height="@dimen/title_height" />
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6px"
+            android:max="100"
+            android:visibility="gone" />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tv_other"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_height"
+            android:layout_gravity="bottom"
+            android:background="#aa000000"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="无法播放？使用其他浏览器打开"
+            android:textColor="@color/white"
+            android:textSize="@dimen/normal_size"
+            android:visibility="gone" />
+
+    </FrameLayout>
 </com.zhy.autolayout.AutoLinearLayout>
