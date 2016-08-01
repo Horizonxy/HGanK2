@@ -47,6 +47,8 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     TextView tvOther;
     @Bind(R.id.btn_left)
     ImageView mBtnLeft;
+    @Bind(R.id.btn_right)
+    ImageView mBtnRight;
     @Bind(R.id.tv_title)
     FlashBackGroundTextView mTvTitle;
 
@@ -69,6 +71,8 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
 
         mTvTitle.setmAnimating(false);
         mBtnLeft.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_mail_reply_all));
+        mBtnRight.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_refresh));
+        mBtnRight.setVisibility(View.VISIBLE);
 
         int color = PreUtils.getInt(this, Constants.BUNDLE_OLD_THEME_COLOR, this.getResources().getColor(R.color.blue));
         ClipDrawable drawable = new ClipDrawable(new ColorDrawable(color), Gravity.LEFT, ClipDrawable.HORIZONTAL);
@@ -97,6 +101,13 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
                     @Override
                     public void call(Void aVoid) {
                         finish();
+                    }
+                });
+        RxView.clicks(mBtnRight).throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        mWebView.reload();
                     }
                 });
     }
