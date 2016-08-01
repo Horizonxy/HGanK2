@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 import rx.functions.Action1;
 
 public class WebViewActivity extends BaseActivity implements WebViewView {
@@ -47,8 +48,10 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     TextView tvOther;
     @Bind(R.id.btn_left)
     ImageView mBtnLeft;
+    @Bind(R.id.btn_right1)
+    ImageView mBtnRefresh;
     @Bind(R.id.btn_right)
-    ImageView mBtnRight;
+    ImageView mBtnShare;
     @Bind(R.id.tv_title)
     FlashBackGroundTextView mTvTitle;
 
@@ -71,8 +74,10 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
 
         mTvTitle.setmAnimating(false);
         mBtnLeft.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_mail_reply_all));
-        mBtnRight.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_refresh));
-        mBtnRight.setVisibility(View.VISIBLE);
+        mBtnRefresh.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_refresh));
+        mBtnRefresh.setVisibility(View.VISIBLE);
+        mBtnShare.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_share));
+        mBtnShare.setVisibility(View.VISIBLE);
 
         int color = PreUtils.getInt(this, Constants.BUNDLE_OLD_THEME_COLOR, this.getResources().getColor(R.color.blue));
         ClipDrawable drawable = new ClipDrawable(new ColorDrawable(color), Gravity.LEFT, ClipDrawable.HORIZONTAL);
@@ -103,13 +108,49 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
                         finish();
                     }
                 });
-        RxView.clicks(mBtnRight).throttleFirst(1, TimeUnit.SECONDS)
+        RxView.clicks(mBtnRefresh).throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         mWebView.reload();
                     }
                 });
+        RxView.clicks(mBtnShare).throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        showShare();
+                    }
+                });
+    }
+
+    private void showShare() {
+        //ShareSDK.initSDK(this);
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+
+        // 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
+        //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+        oks.setTitle(mTvTitle.getText().toString());
+        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+        oks.setTitleUrl(url);
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText(mTvTitle.getText().toString());
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl(url);
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        //oks.setComment("我是测试评论文本");
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite(getString(R.string.app_name));
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl(url);
+
+        // 启动分享GUI
+        oks.show(this);
     }
 
     private void firstLoad(){

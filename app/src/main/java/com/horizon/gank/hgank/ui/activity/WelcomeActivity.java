@@ -55,7 +55,8 @@ public class WelcomeActivity extends Activity {
 
     private void init() {
         if(Build.VERSION.SDK_INT >= 23){
-            String[] permissions = new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            String[] permissions = new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.GET_ACCOUNTS };
             if(PermissionUtils.checkPermissions(this, permissions)){
                 start();
             } else {
