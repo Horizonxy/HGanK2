@@ -22,6 +22,8 @@ import com.horizon.gank.hgank.ui.widget.web.WebViewView;
 import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.PreUtils;
+import com.horizon.gank.hgank.util.SystemStatusManager;
+import com.horizon.gank.hgank.util.ThemeUtils;
 import com.jakewharton.rxbinding.view.RxView;
 import com.mcxiaoke.bus.Bus;
 import com.mcxiaoke.bus.annotation.BusReceiver;
@@ -60,6 +62,7 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SystemStatusManager.setTranslucentStatusColor(this, ThemeUtils.getThemeColor(this, R.attr.colorPrimary));
         setContentView(R.layout.activity_web_view);
         ButterKnife.bind(this);
         Bus.getDefault().register(this);

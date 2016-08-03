@@ -5,7 +5,9 @@ import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
+import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.util.BusEvent;
+import com.horizon.gank.hgank.util.ThemeUtils;
 import com.mcxiaoke.bus.Bus;
 import com.mcxiaoke.bus.annotation.BusReceiver;
 
@@ -28,6 +30,7 @@ public class ColorProgressBar extends ProgressBar {
 
     protected void registerChange() {
         Bus.getDefault().register(this);
+        getIndeterminateDrawable().setColorFilter(ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary), PorterDuff.Mode.SRC_IN);
     }
 
     @BusReceiver

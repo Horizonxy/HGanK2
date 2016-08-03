@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+
 import com.horizon.gank.hgank.R;
 
 public class ColorSelectView extends View {
@@ -60,10 +61,15 @@ public class ColorSelectView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int width = 2 * mRadius  + getPaddingLeft() + getPaddingRight();
-        int height = 2 * mRadius + getPaddingTop() + getPaddingBottom();
-        setMeasuredDimension(width, height);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+//        int width = 2 * mRadius  + getPaddingLeft() + getPaddingRight();
+//        int height = 2 * mRadius + getPaddingTop() + getPaddingBottom();
+        int wh = Math.max(width, height);
+        mRadius = wh / 2;
+        mInRadius = wh / 3;
+        mBorderWidth = wh / 20;
+        setMeasuredDimension(wh, wh);
     }
 
     @Override
@@ -71,11 +77,11 @@ public class ColorSelectView extends View {
         if(isSelected) {
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(mBorderWidth);
-            canvas.drawCircle(getPaddingLeft() + mRadius, getPaddingTop() + mRadius, mRadius - mBorderWidth / 2, mPaint);
+            canvas.drawCircle(getWidth()/2, getHeight()/2, mRadius - mBorderWidth / 2, mPaint);
         }
 
         mPaint.setStrokeWidth(0);
         mPaint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(getPaddingLeft() + mRadius, getPaddingTop() + mRadius, mInRadius, mPaint);
+        canvas.drawCircle(getWidth()/2, getHeight()/2, mInRadius, mPaint);
     }
 }
