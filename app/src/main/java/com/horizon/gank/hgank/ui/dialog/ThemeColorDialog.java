@@ -1,8 +1,13 @@
 package com.horizon.gank.hgank.ui.dialog;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -11,6 +16,8 @@ import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.ui.adapter.ColorSelectAdapter;
 import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.PreUtils;
+import com.horizon.gank.hgank.util.SimpleAnimatorListener;
+import com.horizon.gank.hgank.util.SystemStatusManager;
 import com.horizon.gank.hgank.util.ThemeUtils;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.AdapterViewItemClickEvent;
@@ -29,7 +36,6 @@ public class ThemeColorDialog {
     private AlertDialog dialog;
 
     public ThemeColorDialog(final Activity aty){
-
         View view = aty.getLayoutInflater().inflate(R.layout.view_color_select, null, false);
         GridView gridView = (GridView) view.findViewById(R.id.gv_color_select);
         final TextView tvPositive = (TextView) view.findViewById(R.id.positive);
@@ -69,6 +75,8 @@ public class ThemeColorDialog {
                     public void call(Void aVoid) {
                         Constants.Theme theme = adapter.getSelectTheme();
                         if(theme.getColor() != color){
+                            changeAnimator(aty, theme);
+
                             PreUtils.putInt(aty, Constants.BUNDLE_OLD_THEME_COLOR, ThemeUtils.getThemeColor(aty, R.attr.colorPrimary));
                             aty.setTheme(theme.getTheme());
                             PreUtils.putInt(aty, Constants.BUNDLE_THEME, theme.getTheme());
@@ -91,6 +99,42 @@ public class ThemeColorDialog {
         dialog = builder.show();
     }
 
+    private void changeAnimator(final Activity aty, final Constants.Theme theme){
+        final View decorView = aty.getWindow().getDecorView();
+        decorView.setDrawingCacheEnabled(true);
+        decorView.buildDrawingCache(true);
+        Bitmap localBitmap = Bitmap.createBitmap(decorView.getDrawingCache());
+        decorView.setDrawingCacheEnabled(false);
+        final View tmpView = new View(aty);
+        tmpView.setBackgroundDrawable(new BitmapDrawable(aty.getResources(), localBitmap));
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        ((ViewGroup) decorView).addView(tmpView, params);;
 
+        ValueAnimator animator = new ValueAnimator().ofFloat(1, 0);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            private SystemStatusManager manager;
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float alpha = (float) valueAnimator.getAnimatedValue();
 
+                int status = (int) (0xff * (alpha));
+                int color = (status << 24) ^ theme.getColor();
+                if(manager == null){
+                    manager = new SystemStatusManager(aty);
+                    manager.setStatusBarTintEnabled(true);
+                }
+                manager.setStatusBarTintColor(color);
+                tmpView.setAlpha(alpha);
+            }
+        });
+        animator.addListener(new SimpleAnimatorListener(){
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ((ViewGroup) decorView).removeView(tmpView);
+                SystemStatusManager.setTranslucentStatusColor(aty, theme.getColor());
+            }
+        });
+        animator.setDuration(2000);
+        animator.start();
+    }
 }

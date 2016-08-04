@@ -104,7 +104,7 @@ public class MainActivity extends BaseActivity {
 
     @BusReceiver
     public void onThemeColorEvent(final BusEvent.ThemeColorEvent event){
-        SystemStatusManager.setTranslucentStatusColor(MainActivity.this, event.getColor());
+        //SystemStatusManager.setTranslucentStatusColor(MainActivity.this, event.getColor());
         mToolBar.setBackgroundColor(event.getColor());
         topView.setBackgroundColor(event.getColor());
         mTabLayout.setBackgroundColor(event.getColor());
