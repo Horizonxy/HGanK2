@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.chanven.lib.cptr.PtrClassicFrameLayout;
+import com.chanven.lib.cptr.PtrDefaultHandler;
+import com.chanven.lib.cptr.PtrFrameLayout;
 import com.horizon.gank.hgank.BaseActivity;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
@@ -21,6 +24,7 @@ import com.horizon.gank.hgank.ui.widget.web.WebViewClient;
 import com.horizon.gank.hgank.ui.widget.web.WebViewView;
 import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.DrawableUtils;
+import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.PreUtils;
 import com.horizon.gank.hgank.util.SystemStatusManager;
 import com.horizon.gank.hgank.util.ThemeUtils;
@@ -56,6 +60,8 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     ImageView mBtnShare;
     @Bind(R.id.tv_title)
     FlashBackGroundTextView mTvTitle;
+    @Bind(R.id.refresh_layout)
+    PtrClassicFrameLayout mRefreshLayout;
 
     private boolean mHasVideo;
 
@@ -78,12 +84,13 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
         mTvTitle.setmAnimating(false);
         mBtnLeft.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_mail_reply_all));
         mBtnRefresh.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_refresh));
-        mBtnRefresh.setVisibility(View.VISIBLE);
+        mBtnRefresh.setVisibility(View.GONE);
         mBtnShare.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_share));
         mBtnShare.setVisibility(View.VISIBLE);
 
         int color = PreUtils.getInt(this, Constants.BUNDLE_OLD_THEME_COLOR, this.getResources().getColor(R.color.blue));
         ClipDrawable drawable = new ClipDrawable(new ColorDrawable(color), Gravity.LEFT, ClipDrawable.HORIZONTAL);
+        mProgress.setVisibility(View.GONE);
         mProgress.setProgressDrawable(drawable);
 
         firstLoadAfter = true;
@@ -125,6 +132,20 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
                         showShare();
                     }
                 });
+
+        mRefreshLayout.setLastUpdateTimeRelateObject(this);
+        mRefreshLayout.setPtrHandler(new PtrDefaultHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                mWebView.reload();
+            }
+        });
+        mRefreshLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.autoRefresh(true);
+            }
+        }, 150);
     }
 
     private void showShare() {
@@ -221,7 +242,9 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
 
     @Override
     public void onProgressChanged(int newProgress) {
+        LogUtils.e("newProgress: "+newProgress);
         if(newProgress == 100){
+            mRefreshLayout.refreshComplete();
             mProgress.setVisibility(View.GONE);
         } else {
             if(mProgress.getVisibility() == View.GONE){

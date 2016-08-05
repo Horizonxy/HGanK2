@@ -54,6 +54,7 @@ public class PictureDetailActivity extends Activity {
     private static final int DURATION = 250;
     private int screenWidth, screenHeight;
     public static Bitmap bmp;
+    private boolean isExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +207,11 @@ public class PictureDetailActivity extends Activity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void onBackPressed() {
+        if(isExit){
+            return;
+        }
+        isExit = true;
+
         rlRoot.animate().alpha(0.4f).setDuration(DURATION);
 
         RectF rect = attacher.getDisplayRect();
@@ -228,6 +234,7 @@ public class PictureDetailActivity extends Activity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 PictureDetailActivity.super.onBackPressed();
+                isExit = false;
             }
         });
     }
