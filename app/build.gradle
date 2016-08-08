@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
@@ -9,12 +10,19 @@ android {
         applicationId "com.horizon.gank.hgank"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 8
-        versionName "8.0"
+        versionCode 9
+        versionName "9.0"
     }
     buildTypes {
-        release {
+        debug {
+            buildConfigField "boolean", "LOG_DEBUG", "true"
             minifyEnabled false
+            zipAlignEnabled true
+        }
+        release {
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            minifyEnabled false
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

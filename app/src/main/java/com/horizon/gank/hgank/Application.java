@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 
 import com.horizon.gank.hgank.model.api.ApiService;
 import com.horizon.gank.hgank.util.FileUtils;
+import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.PermissionUtils;
 import com.horizon.gank.hgank.util.RetrofitUtil;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
@@ -28,6 +29,7 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
 
+        LogUtils.setState(BuildConfig.LOG_DEBUG);
         application = this;
     }
 

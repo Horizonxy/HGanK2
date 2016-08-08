@@ -63,7 +63,7 @@ public class ThemeColorDialog {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        if(dialog != null) {
+                        if(dialog != null && aty != null & !aty.isFinishing()) {
                             dialog.dismiss();
                         }
                     }
@@ -85,7 +85,7 @@ public class ThemeColorDialog {
                             colorEvent.setColor(theme.getColor());
                             Bus.getDefault().post(colorEvent);
                         }
-                        if(dialog != null) {
+                        if(dialog != null && aty != null & !aty.isFinishing()) {
                             dialog.dismiss();
                         }
                     }
