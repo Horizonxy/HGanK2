@@ -17,8 +17,8 @@ android {
         applicationId "com.horizon.gank.hgank"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 9
-        versionName "9.0"
+        versionCode 10
+        versionName "10.0"
         multiDexEnabled true
     }
     buildTypes {
