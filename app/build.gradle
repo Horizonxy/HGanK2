@@ -3,15 +3,23 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'gank'
+            keyPassword 'gank123456'
+            storeFile file('horizon_gank.jks')
+            storePassword 'gank123456'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
-
     defaultConfig {
         applicationId "com.horizon.gank.hgank"
         minSdkVersion 14
         targetSdkVersion 24
         versionCode 9
         versionName "9.0"
+        multiDexEnabled true
     }
     buildTypes {
         debug {
@@ -24,9 +32,9 @@ android {
             minifyEnabled false
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
-
     // 注释冲突
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
