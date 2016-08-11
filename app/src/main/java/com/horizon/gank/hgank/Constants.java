@@ -12,6 +12,7 @@ public class Constants {
 	public static final String BASE_DIR = "horizon_gank_5.0";
 	public static final String IMG_CACHE_DIR = BASE_DIR.concat("/image_cache");
 	public static final String IMG_WEB_CACHE_DIR = BASE_DIR.concat("/image_web");
+	public static final String IMG_DOWNLOAD_DIR = BASE_DIR.concat("/download");
 
 	public final static String BUNDLE_WEBVIEW_URL = "bundle_webview_url";
 	public final static String BUNDLE_WEBVIEW_VEDIO = "bundle_webview_vedio";

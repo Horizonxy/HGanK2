@@ -1,5 +1,6 @@
 package com.horizon.gank.hgank.ui.activity;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -24,8 +25,8 @@ import com.horizon.gank.hgank.ui.widget.web.WebViewClient;
 import com.horizon.gank.hgank.ui.widget.web.WebViewView;
 import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.DrawableUtils;
-import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.PreUtils;
+import com.horizon.gank.hgank.util.SimpleAnimatorListener;
 import com.horizon.gank.hgank.util.SystemStatusManager;
 import com.horizon.gank.hgank.util.ThemeUtils;
 import com.jakewharton.rxbinding.view.RxView;
@@ -82,15 +83,13 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
         }
 
         mTvTitle.setmAnimating(false);
-        mBtnLeft.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_mail_reply_all));
+        mBtnLeft.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_mail_reply));
         mBtnRefresh.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_refresh));
         mBtnRefresh.setVisibility(View.GONE);
         mBtnShare.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_share));
-        mBtnShare.setVisibility(View.VISIBLE);
 
         int color = PreUtils.getInt(this, Constants.BUNDLE_OLD_THEME_COLOR, this.getResources().getColor(R.color.blue));
         ClipDrawable drawable = new ClipDrawable(new ColorDrawable(color), Gravity.LEFT, ClipDrawable.HORIZONTAL);
-        mProgress.setVisibility(View.GONE);
         mProgress.setProgressDrawable(drawable);
 
         firstLoadAfter = true;
@@ -140,12 +139,12 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
                 mWebView.reload();
             }
         });
-        mRefreshLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mRefreshLayout.autoRefresh(true);
-            }
-        }, 150);
+//        mRefreshLayout.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mRefreshLayout.autoRefresh(true);
+//            }
+//        }, 150);
     }
 
     private void showShare() {
@@ -190,6 +189,19 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
         if(mHasVideo && !tvOther.isShown()){
             tvOther.setVisibility(View.VISIBLE);
         }
+
+        if(mBtnShare.getVisibility() != View.VISIBLE) {
+            mBtnShare.setVisibility(View.VISIBLE);
+            mBtnShare.setAlpha(0f);
+            mBtnShare.setScaleX(0.1f);
+            mBtnShare.setScaleY(0.1f);
+            mBtnShare.animate().alpha(1f).scaleX(1.3f).scaleY(1.3f).setDuration(400).setListener(new SimpleAnimatorListener(){
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mBtnShare.animate().scaleX(1f).scaleY(1f).setDuration(400).start();
+                }
+            }).start();
+        }
     }
 
 
@@ -226,7 +238,7 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     }
 
     public void back(){
-        if(mWebView.getUrl().equals(url)){
+        if(url.equals(mWebView.getUrl())){
             finish();
         } else if(mWebView.canGoBack()){
             mWebView.goBack();
@@ -242,7 +254,6 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
 
     @Override
     public void onProgressChanged(int newProgress) {
-        LogUtils.e("newProgress: "+newProgress);
         if(newProgress == 100){
             mRefreshLayout.refreshComplete();
             mProgress.setVisibility(View.GONE);

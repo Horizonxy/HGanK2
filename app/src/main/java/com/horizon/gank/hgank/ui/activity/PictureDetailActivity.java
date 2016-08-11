@@ -2,12 +2,13 @@ package com.horizon.gank.hgank.ui.activity;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,13 +17,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.horizon.gank.hgank.Application;
+import com.horizon.gank.hgank.BaseActivity;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
+import com.horizon.gank.hgank.util.BitmapUtils;
 import com.horizon.gank.hgank.util.DisplayUtils;
+import com.horizon.gank.hgank.util.DrawableUtils;
+import com.horizon.gank.hgank.util.FileUtils;
 import com.horizon.gank.hgank.util.SimpleAnimatorListener;
 import com.horizon.gank.hgank.util.SmallPicInfo;
 import com.horizon.gank.hgank.util.SystemStatusManager;
+import com.horizon.gank.hgank.util.ThemeUtils;
+import com.jakewharton.rxbinding.view.RxView;
+import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -30,12 +38,14 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.zhy.autolayout.AutoRelativeLayout;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.functions.Action1;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class PictureDetailActivity extends Activity {
+public class PictureDetailActivity extends BaseActivity {
 
     @Bind(R.id.rl_root)
     AutoRelativeLayout rlRoot;
@@ -47,6 +57,8 @@ public class PictureDetailActivity extends Activity {
     TextView tvDesc;
     @Bind(R.id.afl_desc)
     AnimationFrameLayout aflDesc;
+    @Bind(R.id.btn_download)
+    ImageView btnDownload;
 
     SmallPicInfo smallPicInfo;
     PhotoViewAttacher attacher;
@@ -90,6 +102,25 @@ public class PictureDetailActivity extends Activity {
             tvDesc.setText(smallPicInfo.data.getDesc());
             aflDesc.setAnimationVisibility(View.VISIBLE);
         }
+
+        DrawableUtils.setImageDrawable(btnDownload, MaterialDesignIconic.Icon.gmi_download, 30, ThemeUtils.getThemeColor(this, R.attr.colorPrimary));
+        RxView.clicks(btnDownload).throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        String downloadPath = FileUtils.getEnvPath(PictureDetailActivity.this, true, Constants.IMG_DOWNLOAD_DIR);
+                        Bitmap bmp = ((BitmapDrawable)ivDetail.getDrawable()).getBitmap();
+                        String name = smallPicInfo.data.getUrl().substring(smallPicInfo.data.getUrl().lastIndexOf("/"));
+                        boolean result =  BitmapUtils.saveBmp2SD(bmp, downloadPath,name);
+                        if(result == true){
+                            Snackbar.make(aflDesc, "保存图片到 " + FileUtils.getEnvPath(PictureDetailActivity.this, true, Constants.IMG_DOWNLOAD_DIR) +" 成功", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            Snackbar.make(aflDesc, "保存图片失败，请稍后重试！", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+        });
+
+
     }
 
     private void loadOnNetwork(){
