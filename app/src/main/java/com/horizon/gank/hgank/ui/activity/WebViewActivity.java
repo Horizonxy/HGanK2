@@ -104,10 +104,12 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(mWebView.getUrl()));
-                        startActivity(intent);
+                        if(mWebView.getUrl() != null && mWebView.getUrl().startsWith("http")) {
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(mWebView.getUrl()));
+                            startActivity(intent);
+                        }
                     }
                 });
         RxView.clicks(mBtnLeft).throttleFirst(1, TimeUnit.SECONDS)

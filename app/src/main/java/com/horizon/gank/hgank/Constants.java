@@ -55,6 +55,15 @@ public class Constants {
 			return RED;
 		}
 
+		public static Theme byTheme(int t){
+			for (Theme theme:values()){
+				if(theme.getTheme() == t){
+					return theme;
+				}
+			}
+			return RED;
+		}
+
 		public int getTheme() {
 			return theme;
 		}

@@ -2,6 +2,7 @@ package com.horizon.gank.hgank.ui.activity;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.RectF;
@@ -17,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.horizon.gank.hgank.Application;
-import com.horizon.gank.hgank.BaseActivity;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
@@ -25,10 +25,10 @@ import com.horizon.gank.hgank.util.BitmapUtils;
 import com.horizon.gank.hgank.util.DisplayUtils;
 import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.FileUtils;
+import com.horizon.gank.hgank.util.PreUtils;
 import com.horizon.gank.hgank.util.SimpleAnimatorListener;
 import com.horizon.gank.hgank.util.SmallPicInfo;
 import com.horizon.gank.hgank.util.SystemStatusManager;
-import com.horizon.gank.hgank.util.ThemeUtils;
 import com.jakewharton.rxbinding.view.RxView;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
@@ -48,7 +48,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class PictureDetailActivity extends BaseActivity {
+public class PictureDetailActivity extends Activity {
 
     @Bind(R.id.rl_root)
     AutoRelativeLayout rlRoot;
@@ -106,7 +106,9 @@ public class PictureDetailActivity extends BaseActivity {
             aflDesc.setAnimationVisibility(View.VISIBLE);
         }
 
-        DrawableUtils.setImageDrawable(btnDownload, MaterialDesignIconic.Icon.gmi_download, 30, ThemeUtils.getThemeColor(this, R.attr.colorPrimary));
+        int theme = PreUtils.getInt(this, Constants.BUNDLE_THEME, R.style.red_theme);
+        int color = Constants.Theme.byTheme(theme).getColor();
+        DrawableUtils.setImageDrawable(btnDownload, MaterialDesignIconic.Icon.gmi_download, 30, color);
         RxView.clicks(btnDownload).throttleFirst(1, TimeUnit.SECONDS)
                 .map(new Func1<Void, Bitmap>() {
                     @Override

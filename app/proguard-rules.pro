@@ -22,6 +22,9 @@
     native <methods>;
 }
 -keepclasseswithmembers class * {   # 保持自定义控件类不被混淆
+    public <init>(android.content.Context);
+}
+-keepclasseswithmembers class * {   # 保持自定义控件类不被混淆
     public <init>(android.content.Context, android.util.AttributeSet);
 }
 -keepclasseswithmembers class * {# 保持自定义控件类不被混淆
@@ -29,14 +32,20 @@
 }
 -keepclassmembers class * extends android.app.Activity { # 保持自定义控件类不被混淆   
     public void *(android.view.View);
+    public void on*Event(**);
 }
+
+-keep class com.horizon.gank.hgank.ui.widget.** { *; }
+
 -keepclassmembers enum * {     # 保持枚举 enum 类不被混淆    
     public static **[] values();    
     public static ** valueOf(java.lang.String);
 }
+
 -keep class * implements android.os.Parcelable { # 保持 Parcelable 不被混淆  
     public static final android.os.Parcelable$Creator *;
 }
+
 -keep public class * implements java.io.Serializable {*;} # 保持 Serializable 不被混淆
 
 -keepattributes Signature # keep 泛型
@@ -98,11 +107,12 @@
 ## ----------------------------------
 ##      Gson
 ## ----------------------------------
--keepattributes Signature-keepattributes *Annotation*
+-keepattributes Signature
+-keepattributes *Annotation*
 -keep class sun.misc.Unsafe { *; }
 -keep class com.google.gson.stream.** { *; }
 # Application classes that will be serialized/deserialized over Gson 下面替换成自己的实体类
--keep class com.example.bean.** { *; }
+-keep class com.horizon.gank.hgank.model.bean.** { *; }
 
 ## ----------------------------------
 ##      OkHttp3
@@ -116,3 +126,17 @@
 ## ----------------------------------
 -dontwarn com.nostra13.universalimageloader.**
 -keep class com.nostra13.universalimageloader.** { *; }
+
+## ----------------------------------
+##      ormlite
+## ----------------------------------
+-keep class com.j256.**
+-keepclassmembers class com.j256.** { *; }
+-keep enum com.j256.**
+-keepclassmembers enum com.j256.** { *; }
+-keep interface com.j256.**
+-keepclassmembers interface com.j256.** { *; }
+-keep class * extends com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper
+-keepclassmembers class * extends com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper {
+  public <init>(android.content.Context);
+}
