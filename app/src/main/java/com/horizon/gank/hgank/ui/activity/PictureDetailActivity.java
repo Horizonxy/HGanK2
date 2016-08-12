@@ -42,7 +42,10 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class PictureDetailActivity extends BaseActivity {
@@ -105,14 +108,26 @@ public class PictureDetailActivity extends BaseActivity {
 
         DrawableUtils.setImageDrawable(btnDownload, MaterialDesignIconic.Icon.gmi_download, 30, ThemeUtils.getThemeColor(this, R.attr.colorPrimary));
         RxView.clicks(btnDownload).throttleFirst(1, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
+                .map(new Func1<Void, Bitmap>() {
                     @Override
-                    public void call(Void aVoid) {
+                    public Bitmap call(Void aVoid) {
+                        return ((BitmapDrawable)ivDetail.getDrawable()).getBitmap();
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .map(new Func1<Bitmap, Boolean>() {
+                    @Override
+                    public Boolean call(Bitmap bitmap) {
                         String downloadPath = FileUtils.getEnvPath(PictureDetailActivity.this, true, Constants.IMG_DOWNLOAD_DIR);
-                        Bitmap bmp = ((BitmapDrawable)ivDetail.getDrawable()).getBitmap();
                         String name = smallPicInfo.data.getUrl().substring(smallPicInfo.data.getUrl().lastIndexOf("/"));
-                        boolean result =  BitmapUtils.saveBmp2SD(bmp, downloadPath,name);
-                        if(result == true){
+                        return  BitmapUtils.saveBmp2SD(bmp, downloadPath,name);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if(aBoolean != null && aBoolean.booleanValue() == true){
                             Snackbar.make(aflDesc, "保存图片到 " + FileUtils.getEnvPath(PictureDetailActivity.this, true, Constants.IMG_DOWNLOAD_DIR) +" 成功", Snackbar.LENGTH_LONG).show();
                         } else {
                             Snackbar.make(aflDesc, "保存图片失败，请稍后重试！", Snackbar.LENGTH_LONG).show();
