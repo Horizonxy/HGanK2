@@ -8,6 +8,7 @@ import com.horizon.gank.hgank.util.FileUtils;
 import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.PermissionUtils;
 import com.horizon.gank.hgank.util.RetrofitUtil;
+import com.mcxiaoke.bus.Bus;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -29,8 +30,11 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
 
-        LogUtils.setState(BuildConfig.LOG_DEBUG);
         application = this;
+
+        LogUtils.setState(BuildConfig.DEBUG);
+        Bus.getDefault().setStrictMode(true);
+        Bus.getDefault().setDebug(BuildConfig.DEBUG);
     }
 
     public DisplayImageOptions getDefaultOptions() {

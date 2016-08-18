@@ -13,13 +13,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.horizon.gank.hgank.download.FileCallBack;
+import com.horizon.gank.hgank.model.api.DownLoadApiServide;
 import com.horizon.gank.hgank.receiver.NetReceiver;
+import com.horizon.gank.hgank.ui.activity.PictureDetailActivity;
 import com.horizon.gank.hgank.ui.adapter.GanKTabAdapter;
 import com.horizon.gank.hgank.ui.dialog.ThemeColorDialog;
 import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
 import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.DrawableUtils;
+import com.horizon.gank.hgank.util.FileUtils;
+import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.NetUtils;
+import com.horizon.gank.hgank.util.RetrofitUtil;
 import com.horizon.gank.hgank.util.SystemStatusManager;
 import com.horizon.gank.hgank.util.ThemeUtils;
 import com.jakewharton.rxbinding.view.RxView;
@@ -27,13 +33,21 @@ import com.mcxiaoke.bus.Bus;
 import com.mcxiaoke.bus.annotation.BusReceiver;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import rx.Observable;
+import rx.Scheduler;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends BaseActivity {
@@ -100,6 +114,26 @@ public class MainActivity extends BaseActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver, filter);
+
+        if(BuildConfig.DEBUG){
+            testDownLoad();
+        }
+    }
+
+    private void testDownLoad(){
+        DownLoadApiServide downLoadApiServide = RetrofitUtil.createDownLoadApi();
+        downLoadApiServide.loadFile().enqueue(new FileCallBack(){
+            @Override
+            public void save(InputStream is) {
+                String path = FileUtils.getEnvPath(MainActivity.this, true, Constants.BASE_DIR);
+                FileUtils.write2SDFromInput(path, "test_download.apk", is);
+            }
+        });
+    }
+
+    @BusReceiver
+    public void onFileDownLoadEvent(BusEvent.FileDownLoadEvent event) {
+        LogUtils.e("当前进度：" + event.getProgress() + "/" + event.getTotal());
     }
 
     @BusReceiver

@@ -3,6 +3,7 @@ package com.horizon.gank.hgank;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.horizon.gank.hgank.util.CrashHandler;
 import com.horizon.gank.hgank.util.PreUtils;
 import com.zhy.autolayout.AutoLayoutActivity;
 
@@ -14,8 +15,10 @@ public class BaseActivity extends AutoLayoutActivity {
         int theme = PreUtils.getInt(this, Constants.BUNDLE_THEME, R.style.red_theme);
         setTheme(theme);
 
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//        crashHandler.init(this);
+        if(!BuildConfig.DEBUG) {
+            CrashHandler crashHandler = CrashHandler.getInstance();
+            crashHandler.init(this);
+        }
     }
 
 }

@@ -8,6 +8,7 @@ public class Constants {
 	public static final int PAGE_SIZE = 20;
 
 	public static final String END_POIND = "http://gank.io";
+	public static final String DOWNLOAD_POIND = "http://hengdawb-app.oss-cn-hangzhou.aliyuncs.com";
 
 	public static final String BASE_DIR = "horizon_gank_5.0";
 	public static final String IMG_CACHE_DIR = BASE_DIR.concat("/image_cache");

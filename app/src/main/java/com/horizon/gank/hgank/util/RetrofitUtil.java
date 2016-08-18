@@ -3,6 +3,8 @@ package com.horizon.gank.hgank.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.horizon.gank.hgank.Constants;
+import com.horizon.gank.hgank.download.DownLoadInterceptor;
+import com.horizon.gank.hgank.model.api.DownLoadApiServide;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +39,7 @@ public class RetrofitUtil {
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.addInterceptor(header)
+				.addInterceptor(new DownLoadInterceptor())
 				.addInterceptor(logging)
 				.connectTimeout(Constants.TIME_OUT, TimeUnit.SECONDS)
 				.writeTimeout(Constants.TIME_OUT, TimeUnit.SECONDS)
@@ -62,5 +65,12 @@ public class RetrofitUtil {
 
 		return builder.create();
 	}
-	
+
+	public static DownLoadApiServide createDownLoadApi(){
+		Retrofit retrofit = new Retrofit.Builder()
+				.client(RetrofitUtil.createOkHttpClient())
+				.baseUrl(Constants.DOWNLOAD_POIND)
+				.build();
+		return retrofit.create(DownLoadApiServide.class);
+	}
 }

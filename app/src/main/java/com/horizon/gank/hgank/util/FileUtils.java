@@ -320,6 +320,7 @@ public class FileUtils {
 			if (!file.exists())
 				file.createNewFile();
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -431,8 +432,12 @@ public class FileUtils {
 	 */
 	public static boolean createDir(String path) {
 		try {
-			new File(path).mkdir();
+			File file = new File(path);
+			if(!file.exists()){
+				file.mkdirs();
+			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -678,7 +683,7 @@ public class FileUtils {
 	 */
 	public static File write2SDFromInput(String path, String fileName,
 			InputStream input) {
-		File file = new File(path + fileName);
+		File file = new File(path, fileName);
 		OutputStream output = null;
 		try {
 			createDir(path);
