@@ -1,11 +1,14 @@
 package com.horizon.gank.hgank;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -16,14 +19,12 @@ import android.widget.TextView;
 import com.horizon.gank.hgank.download.FileCallBack;
 import com.horizon.gank.hgank.model.api.DownLoadApiServide;
 import com.horizon.gank.hgank.receiver.NetReceiver;
-import com.horizon.gank.hgank.ui.activity.PictureDetailActivity;
 import com.horizon.gank.hgank.ui.adapter.GanKTabAdapter;
 import com.horizon.gank.hgank.ui.dialog.ThemeColorDialog;
 import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
 import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.FileUtils;
-import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.NetUtils;
 import com.horizon.gank.hgank.util.RetrofitUtil;
 import com.horizon.gank.hgank.util.SystemStatusManager;
@@ -33,6 +34,7 @@ import com.mcxiaoke.bus.Bus;
 import com.mcxiaoke.bus.annotation.BusReceiver;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -40,14 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import rx.Observable;
-import rx.Scheduler;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends BaseActivity {
@@ -62,11 +57,15 @@ public class MainActivity extends BaseActivity {
     AnimationFrameLayout mFlNoNet;
 
     private static final List<String> TITLES = Arrays.asList(new String[]{ "福利", "Android", "iOS", "前端", "休息视频", "App", "瞎推荐", "拓展资源" });
-    private  NetReceiver receiver;
+    private NetReceiver netrRceiver;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private ActionBar ab;
     private View topView;
+
+    private static final int NOTIFY_ID = MainActivity.class.getSimpleName().hashCode();
+    private NotificationCompat.Builder notification;
+    private NotificationManager mNotificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,10 +109,10 @@ public class MainActivity extends BaseActivity {
                 });
         mFlNoNet.setVisibility(NetUtils.isNetworkConnected(this) ? View.GONE : View.VISIBLE);
 
-        receiver = new NetReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(receiver, filter);
+        netrRceiver = new NetReceiver();
+        IntentFilter netFilter = new IntentFilter();
+        netFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netrRceiver, netFilter);
 
         if(BuildConfig.DEBUG){
             testDownLoad();
@@ -121,19 +120,41 @@ public class MainActivity extends BaseActivity {
     }
 
     private void testDownLoad(){
+        final String path = FileUtils.getEnvPath(MainActivity.this, true, Constants.BASE_DIR);
+        final String name = "test_download.apk";
+        File file = new File(path,name);
+        if(file.exists()){
+            file.delete();
+        }
+
         DownLoadApiServide downLoadApiServide = RetrofitUtil.createDownLoadApi();
         downLoadApiServide.loadFile().enqueue(new FileCallBack(){
             @Override
             public void save(InputStream is) {
-                String path = FileUtils.getEnvPath(MainActivity.this, true, Constants.BASE_DIR);
-                FileUtils.write2SDFromInput(path, "test_download.apk", is);
+                FileUtils.write2SDFromInput(path, name, is);
             }
         });
     }
 
     @BusReceiver
-    public void onFileDownLoadEvent(BusEvent.FileDownLoadEvent event) {
-        LogUtils.e("当前进度：" + event.getProgress() + "/" + event.getTotal());
+    public void onFileDownLoadEvent(BusEvent.FileDownLoadEvent event){
+        if(notification != null) {
+            notification.setProgress((int) event.getTotal(), (int) event.getProgress(), false);
+            notification.setContentText("下载："+ (event.getProgress() * 100 / event.getTotal())+"%");
+            mNotificationManager.notify(NOTIFY_ID, notification.build());
+        } else{
+            notification = new NotificationCompat.Builder(this);
+            notification.setTicker("测试下载...");
+            notification.setContentTitle(getResources().getString(R.string.app_name));
+            notification.setContentText("下载准备中...");
+            notification.setSmallIcon(R.mipmap.icon);
+            notification.setWhen(System.currentTimeMillis());
+//            notification.setOngoing(true);
+            notification.setAutoCancel(true);
+
+            mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(NOTIFY_ID, notification.build());
+        }
     }
 
     @BusReceiver
@@ -157,8 +178,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if(receiver!= null) {
-            unregisterReceiver(receiver);
+        if(netrRceiver != null) {
+            unregisterReceiver(netrRceiver);
         }
         if(mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()){
             mCompositeSubscription.unsubscribe();

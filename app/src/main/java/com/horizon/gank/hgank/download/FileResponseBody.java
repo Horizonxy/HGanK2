@@ -18,7 +18,8 @@ import okio.Okio;
  */
 public class FileResponseBody extends ResponseBody {
 
-    Response response;
+    private Response response;
+    private BufferedSource bufferedSource;
 
     public FileResponseBody(Response response){
         this.response = response;
@@ -36,19 +37,26 @@ public class FileResponseBody extends ResponseBody {
 
     @Override
     public BufferedSource source() {
-        return Okio.buffer(new ForwardingSource(response.body().source()) {
-            long readed;
+        if(bufferedSource == null) {
+            bufferedSource = Okio.buffer(new ForwardingSource(response.body().source()) {
+                long readed;
+                long lastReaded;
 
-            @Override
-            public long read(Buffer sink, long byteCount) throws IOException {
-                long read  = super.read(sink, byteCount);
-                readed += read == -1 ? 0 : read;
+                @Override
+                public long read(Buffer sink, long byteCount) throws IOException {
+                    long read = super.read(sink, byteCount);
+                    readed += read == -1 ? 0 : read;
 
-                Bus.getDefault().postSticky(new BusEvent.FileDownLoadEvent(readed, contentLength()));
+                    if ((readed - lastReaded) > contentLength() * 3 / 100 || readed >= contentLength()) {
+                        Bus.getDefault().postSticky(new BusEvent.FileDownLoadEvent(readed, contentLength()));
+                        lastReaded = readed;
+                    }
 
-                return read;
-            }
-        });
+                    return read;
+                }
+            });
+        }
+        return bufferedSource;
     }
 
 }
