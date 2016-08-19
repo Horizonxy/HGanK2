@@ -39,7 +39,6 @@ public class RetrofitUtil {
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.addInterceptor(header)
-				.addInterceptor(new DownLoadInterceptor())
 				.addInterceptor(logging)
 				.connectTimeout(Constants.TIME_OUT, TimeUnit.SECONDS)
 				.writeTimeout(Constants.TIME_OUT, TimeUnit.SECONDS)
@@ -67,8 +66,14 @@ public class RetrofitUtil {
 	}
 
 	public static DownLoadApiServide createDownLoadApi(){
+		OkHttpClient client = new OkHttpClient.Builder()
+				.addInterceptor(new DownLoadInterceptor())
+				.connectTimeout(Constants.TIME_OUT, TimeUnit.SECONDS)
+				.writeTimeout(Constants.TIME_OUT, TimeUnit.SECONDS)
+				.readTimeout(Constants.TIME_OUT, TimeUnit.SECONDS)
+				.build();
 		Retrofit retrofit = new Retrofit.Builder()
-				.client(RetrofitUtil.createOkHttpClient())
+				.client(client)
 				.baseUrl(Constants.DOWNLOAD_POIND)
 				.build();
 		return retrofit.create(DownLoadApiServide.class);
