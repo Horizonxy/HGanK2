@@ -23,14 +23,12 @@ android {
     }
     buildTypes {
         debug {
-            //buildConfigField "boolean", "DEBUG", "true"
             minifyEnabled true
             shrinkResources true
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
-            //buildConfigField "boolean", "DEBUG", "false"
             minifyEnabled true
             shrinkResources true
             zipAlignEnabled true
@@ -84,4 +82,5 @@ dependencies {
     compile files('libs/ShareSDK-Wechat-2.7.4.jar')
     compile files('libs/ShareSDK-Wechat-Core-2.7.4.jar')
     compile files('libs/ShareSDK-Wechat-Moments-2.7.4.jar')
+    compile 'com.umeng.analytics:analytics:latest.integration'
 }

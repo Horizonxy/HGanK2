@@ -21,6 +21,7 @@ import com.horizon.gank.hgank.Application;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
+import com.horizon.gank.hgank.util.AppUtils;
 import com.horizon.gank.hgank.util.BitmapUtils;
 import com.horizon.gank.hgank.util.DisplayUtils;
 import com.horizon.gank.hgank.util.DrawableUtils;
@@ -35,6 +36,7 @@ import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.umeng.analytics.MobclickAgent;
 import com.zhy.autolayout.AutoRelativeLayout;
 
 import java.io.File;
@@ -77,6 +79,7 @@ public class PictureDetailActivity extends Activity {
         SystemStatusManager.setTranslucentStatusRes(this, R.color.transparent);
         setContentView(R.layout.activity_picture_detail);
         ButterKnife.bind(this);
+        AppUtils.initCarsh(this);
 
         rlRoot.setAlpha(0f);
         rlRoot.animate().alpha(1f).setDuration(DURATION);
@@ -285,6 +288,20 @@ public class PictureDetailActivity extends Activity {
                 isExit = false;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        MobclickAgent.onPause(this);
     }
 
     @Override

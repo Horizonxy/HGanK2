@@ -12,12 +12,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.horizon.gank.hgank.Application;
+import com.horizon.gank.hgank.BuildConfig;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.MainActivity;
 import com.horizon.gank.hgank.R;
+import com.horizon.gank.hgank.util.AppUtils;
 import com.horizon.gank.hgank.util.PermissionUtils;
 import com.horizon.gank.hgank.util.SystemStatusManager;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 
@@ -35,6 +38,7 @@ public class WelcomeActivity extends Activity {
         SystemStatusManager.setTranslucentStatusRes(this, R.color.transparent);
         setContentView(R.layout.activity_welcome);
         ButterKnife.bind(this);
+        AppUtils.initCarsh(this);
 
         DiskCache diskCache = Application.application.getImageLoader().getDiskCache();
         File directory = diskCache.getDirectory();
@@ -51,6 +55,14 @@ public class WelcomeActivity extends Activity {
         }
 
         init();
+
+        initUmeng();
+    }
+
+    private void initUmeng() {
+        MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
+        MobclickAgent.setDebugMode(BuildConfig.DEBUG);
+        MobclickAgent.enableEncrypt(true);
     }
 
     private void init() {
@@ -92,5 +104,19 @@ public class WelcomeActivity extends Activity {
         if(requestCode == Constants.REQ_PERMISSIONS){
             start();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        MobclickAgent.onPause(this);
     }
 }

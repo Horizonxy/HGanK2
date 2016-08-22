@@ -26,6 +26,7 @@ import com.horizon.gank.hgank.ui.iview.GanKFragmentViewListener;
 import com.horizon.gank.hgank.util.GsonUtils;
 import com.horizon.gank.hgank.util.NetUtils;
 import com.horizon.gank.hgank.util.SimpleSubscriber;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -241,5 +242,19 @@ public class GanKFragment extends Fragment implements GanKFragmentViewListener {
             mPresenter.onDestroy();
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MobclickAgent.onPageStart("GanKFragment " + mType);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        MobclickAgent.onPageEnd("GanKFragment " + mType);
     }
 }

@@ -2,6 +2,8 @@ package com.horizon.gank.hgank.util;
 
 import android.app.Activity;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.lang.Thread.UncaughtExceptionHandler;
 
 /**
@@ -33,6 +35,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
 	@Override
 	public void uncaughtException(Thread thread, Throwable ex) {
+        MobclickAgent.onKillProcess(aty);
+
 		System.exit(0);
 	}
 	
@@ -44,15 +48,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
     private boolean handleException(Throwable ex) {  
         if (ex == null) {  
             return true;  
-        }  
-  
-//		new Handler(Looper.getMainLooper()).post(new Runnable() {
-//			@Override
-//			public void run() {
-//				ToastUtils.show(aty, "抱歉，程序出错了...");
-//			}
-//		});
-        
+        }
+
         return true;  
     }  
 

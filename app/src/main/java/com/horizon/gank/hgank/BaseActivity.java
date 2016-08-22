@@ -3,8 +3,10 @@ package com.horizon.gank.hgank;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.horizon.gank.hgank.util.AppUtils;
 import com.horizon.gank.hgank.util.CrashHandler;
 import com.horizon.gank.hgank.util.PreUtils;
+import com.umeng.analytics.MobclickAgent;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 public class BaseActivity extends AutoLayoutActivity {
@@ -15,10 +17,21 @@ public class BaseActivity extends AutoLayoutActivity {
         int theme = PreUtils.getInt(this, Constants.BUNDLE_THEME, R.style.red_theme);
         setTheme(theme);
 
-        if(!BuildConfig.DEBUG) {
-            CrashHandler crashHandler = CrashHandler.getInstance();
-            crashHandler.init(this);
-        }
+        AppUtils.initCarsh(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        MobclickAgent.onPause(this);
     }
 
 }

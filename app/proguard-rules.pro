@@ -140,3 +140,10 @@
 -keepclassmembers class * extends com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper {
   public <init>(android.content.Context);
 }
+
+## ----------------------------------
+##      umeng
+## ----------------------------------
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}

@@ -90,6 +90,9 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <meta-data android:value="57ba64ba67e58e9ba1002c53" android:name="UMENG_APPKEY"></meta-data>
+        <meta-data android:value="Channel ID" android:name="hgank"/>
+
     </application>
 
 </manifest>
