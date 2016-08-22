@@ -1,11 +1,13 @@
 package com.horizon.gank.hgank.di.module;
 
+import android.Manifest;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 
 import com.horizon.gank.hgank.Application;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.util.FileUtils;
+import com.horizon.gank.hgank.util.PermissionUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -31,12 +33,6 @@ public class AppModule {
 
     @Singleton
     @Provides
-    public Resources provideResources(){
-        return application.getResources();
-    }
-
-    @Singleton
-    @Provides
     public ImageLoader provideImageLoader(){
         ImageLoader imageLoader = ImageLoader.getInstance();
         final String IMG_CACHE_PATH = FileUtils.getEnvPath(application, true, Constants.IMG_CACHE_DIR);
@@ -44,15 +40,16 @@ public class AppModule {
         if(!imgFile.exists()){
             imgFile.mkdirs();
         }
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(application)
-                .threadPoolSize(20)
+        ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(application)
+                .threadPoolSize(5)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .denyCacheImageMultipleSizesInMemory()
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
-                .discCache(new UnlimitedDiskCache(imgFile))
-                .writeDebugLogs()
-                .build();
-        imageLoader.init(config);
+                .writeDebugLogs();
+        if(PermissionUtils.checkPermissions(application, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE})){
+            builder.discCache(new UnlimitedDiskCache(imgFile));
+        }
+        imageLoader.init(builder.build());
 
         return imageLoader;
     }
