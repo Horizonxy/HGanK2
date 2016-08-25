@@ -72,6 +72,7 @@ public class PictureDetailActivity extends Activity {
     private int screenWidth, screenHeight;
     public static Bitmap bmp;
     private boolean isExit;
+    private Bitmap bitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +95,11 @@ public class PictureDetailActivity extends Activity {
         DiskCache diskCache = Application.application.getImageLoader().getDiskCache();
         File file = diskCache.get(smallPicInfo.data.getUrl());
         if (file != null && file.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            try {
+                bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            } catch (OutOfMemoryError e){
+                e.printStackTrace();
+            }
             if(bitmap == null){
                 loadOnNetwork();
             } else {
@@ -149,8 +154,7 @@ public class PictureDetailActivity extends Activity {
         lp.height = smallPicInfo.height;
         ivDetail.setLayoutParams(lp);
 
-//        Bitmap small = BitmapFactory.decodeByteArray(smallPicInfo.bmp, 0, smallPicInfo.bmp.length);
-        if(bmp == null) {
+        if(bmp != null) {
             ivDetail.setImageBitmap(bmp);
         }
 
@@ -309,6 +313,9 @@ public class PictureDetailActivity extends Activity {
         super.onDestroy();
         smallPicInfo = null;
         bmp = null;
+        if(bitmap != null && !bitmap.isRecycled()){
+            bitmap.recycle();
+        }
     }
 
     @Override

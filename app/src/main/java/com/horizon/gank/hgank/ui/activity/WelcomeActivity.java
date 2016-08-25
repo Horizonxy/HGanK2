@@ -11,15 +11,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import com.horizon.gank.hgank.Application;
 import com.horizon.gank.hgank.BuildConfig;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.MainActivity;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.util.AppUtils;
+import com.horizon.gank.hgank.util.FileUtils;
 import com.horizon.gank.hgank.util.PermissionUtils;
 import com.horizon.gank.hgank.util.SystemStatusManager;
-import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
@@ -32,6 +31,8 @@ public class WelcomeActivity extends Activity {
     @Bind(R.id.iv_welcome)
     ImageView vWelcome;
 
+    private Bitmap bitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +41,14 @@ public class WelcomeActivity extends Activity {
         ButterKnife.bind(this);
         AppUtils.initCarsh(this);
 
-        DiskCache diskCache = Application.application.getImageLoader().getDiskCache();
-        File directory = diskCache.getDirectory();
+        File directory = new File(FileUtils.getEnvPath(this, true, Constants.IMG_CACHE_DIR));
         if(directory != null && directory.exists() && directory.listFiles() != null && directory.listFiles().length > 0){
             int index = (int) (Math.random() * (directory.listFiles().length -1));
-            Bitmap bitmap = BitmapFactory.decodeFile(directory.listFiles()[index].getAbsolutePath());
+            try {
+                bitmap = BitmapFactory.decodeFile(directory.listFiles()[index].getAbsolutePath());
+            } catch (OutOfMemoryError e){
+                e.printStackTrace();
+            }
             if(bitmap == null){
                 vWelcome.setImageResource(R.mipmap.welcome);
             } else {
@@ -118,5 +122,14 @@ public class WelcomeActivity extends Activity {
         super.onPause();
 
         MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(bitmap != null && !bitmap.isRecycled()){
+            bitmap.recycle();
+        }
     }
 }

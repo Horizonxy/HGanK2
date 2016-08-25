@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <ProgressBar
+    <com.horizon.gank.hgank.ui.widget.ColorProgressBar
         android:id="@+id/progress_load"
         style="?android:attr/progressBarStyleLargeInverse"
         android:layout_width="@dimen/title_height"

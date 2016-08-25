@@ -31,13 +31,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/red_theme">
-        <meta-data
-            android:name="design_width"
-            android:value="1080" />
-        <meta-data
-            android:name="design_height"
-            android:value="1920" />
 
+        <!--auto-layout-->
+        <meta-data  android:name="design_width" android:value="1080" />
+        <meta-data android:name="design_height" android:value="1920" />
+
+        <!--glide
+        <meta-data android:name="com.horizon.gank.hgank.glide.GankGlideModule" android:value="GlideModule" />-->
+
+        <!--umeng多渠道-->
+        <meta-data android:value="57ba64ba67e58e9ba1002c53" android:name="UMENG_APPKEY"></meta-data>
+        <meta-data android:value="yingyongbao" android:name="UMENG_CHANNEL"/>
+
+        <!--启动页-->
         <activity
             android:name=".ui.activity.WelcomeActivity"
             android:screenOrientation="portrait"
@@ -48,18 +54,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--主页-->
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+
+        <!--wap页-->
         <activity
             android:name=".ui.activity.WebViewActivity"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" />
+
+        <!--大图查看页-->
         <activity
             android:name=".ui.activity.PictureDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/activity_translucent" />
+
+        <!--share_sdk-->
         <activity
             android:name="com.mob.tools.MobUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -89,9 +103,6 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <meta-data android:value="57ba64ba67e58e9ba1002c53" android:name="UMENG_APPKEY"></meta-data>
-        <meta-data android:value="yingyongbao" android:name="UMENG_CHANNEL"/>
 
     </application>
 

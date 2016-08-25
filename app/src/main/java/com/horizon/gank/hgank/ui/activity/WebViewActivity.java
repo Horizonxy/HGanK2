@@ -2,6 +2,7 @@ package com.horizon.gank.hgank.ui.activity;
 
 import android.animation.Animator;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -89,8 +90,9 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
         mBtnShare.setImageDrawable(DrawableUtils.getDrawable(this, MaterialDesignIconic.Icon.gmi_share));
 
         int color = PreUtils.getInt(this, Constants.BUNDLE_OLD_THEME_COLOR, this.getResources().getColor(R.color.blue));
-        ClipDrawable drawable = new ClipDrawable(new ColorDrawable(color), Gravity.LEFT, ClipDrawable.HORIZONTAL);
-        mProgress.setProgressDrawable(drawable);
+//        ClipDrawable drawable = new ClipDrawable(new ColorDrawable(color), Gravity.LEFT, ClipDrawable.HORIZONTAL);
+//        mProgress.setProgressDrawable(drawable);
+        mProgress.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         firstLoadAfter = true;
 
