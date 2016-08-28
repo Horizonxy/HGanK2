@@ -27,7 +27,12 @@ public class Constants {
 
 	public static final int REQ_PERMISSIONS = 1000;
 
+	/** 缓存100天 */
+	public static final long CACHE_TIME = 60 * 60 * 24 * 100;
+	/** 10秒超时 */
 	public static final long TIME_OUT = 10;
+	/** 缓存容量 */
+	public static final long SIZE_OF_CACHE = 100 * 1024 * 1024;
 
 	public static enum Theme {
 		RED(R.style.red_theme, Application.application.getResources().getColor(R.color.red)),
