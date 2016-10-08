@@ -15,6 +15,8 @@ import com.horizon.gank.hgank.ui.adapter.RecyclerNormalAdapter;
 import com.horizon.gank.hgank.ui.adapter.recyclerview.DividerItemDecoration;
 import com.horizon.gank.hgank.ui.adapter.recyclerview.SpacesItemDecoration;
 import com.horizon.gank.hgank.ui.iview.GanKFragmentViewListener;
+import com.horizon.gank.hgank.ui.widget.WrapContentLinearLayoutManager;
+import com.horizon.gank.hgank.ui.widget.WrapContentStaggeredGridLayoutManager;
 import com.horizon.gank.hgank.util.DisplayUtils;
 
 import java.util.List;
@@ -57,9 +59,9 @@ public class GanKFragmentModule {
     @Provides
     public RecyclerView.LayoutManager provideLayoutManager(){
         if(mType.equals("福利")){
-            return new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            return new WrapContentStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         } else {
-            return  new LinearLayoutManager(mAty);
+            return new WrapContentLinearLayoutManager(mAty, LinearLayoutManager.VERTICAL, false);
         }
     }
 
