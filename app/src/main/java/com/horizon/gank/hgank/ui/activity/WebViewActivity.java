@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import com.chanven.lib.cptr.PtrFrameLayout;
 import com.horizon.gank.hgank.BaseActivity;
 import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.R;
+import com.horizon.gank.hgank.ui.popup.SharePopupWindow;
 import com.horizon.gank.hgank.ui.widget.FlashBackGroundTextView;
 import com.horizon.gank.hgank.ui.widget.web.WebChromeClient;
 import com.horizon.gank.hgank.ui.widget.web.WebView;
@@ -151,6 +153,9 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     }
 
     private void showShare() {
+//        SharePopupWindow sharePopup = new SharePopupWindow(this);
+//        sharePopup.show();
+
         //ShareSDK.initSDK(this);
         OnekeyShare oks = new OnekeyShare();
         //关闭sso授权

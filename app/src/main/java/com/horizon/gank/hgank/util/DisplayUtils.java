@@ -1,8 +1,10 @@
 package com.horizon.gank.hgank.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.WindowManager;
 
 import java.lang.reflect.Field;
 
@@ -66,5 +68,19 @@ public class DisplayUtils {
     public static int px2sp(Context context, float pxValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
+    }
+
+    /**
+     * @description 设置添加屏幕的背景透明度
+     * @author 蒋先明
+     * @date 2015年7月15日 上午10:25:33
+     * @param bgAlpha
+     * @return
+     * @lastupdatetime 2015年7月15日 上午10:25:33
+     */
+    public static void backgroundAlpha(Activity activity, float bgAlpha) {
+        WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        activity.getWindow().setAttributes(lp);
     }
 }
