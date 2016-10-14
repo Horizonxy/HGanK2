@@ -5,11 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.horizon.gank.hgank.BuildConfig;
 import com.horizon.gank.hgank.Constants;
@@ -17,9 +17,10 @@ import com.horizon.gank.hgank.MainActivity;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.util.AppUtils;
 import com.horizon.gank.hgank.util.FileUtils;
-import com.horizon.gank.hgank.util.PermissionUtils;
 import com.horizon.gank.hgank.util.SystemStatusManager;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.UmengTool;
 
 import java.io.File;
 
@@ -32,6 +33,10 @@ public class WelcomeActivity extends Activity {
     ImageView vWelcome;
 
     private Bitmap bitmap;
+
+    private static final String[] permissions = new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE, Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,29 +63,22 @@ public class WelcomeActivity extends Activity {
             vWelcome.setImageResource(R.mipmap.welcome);
         }
 
-        init();
-
         initUmeng();
+
+        RxPermissions.getInstance(this).request(permissions)
+                .subscribe(granted -> {
+                    if(granted){
+                        start();
+                    } else {
+                        Toast.makeText(WelcomeActivity.this, "请在设置中同意应用权限！", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void initUmeng() {
         MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
         MobclickAgent.setDebugMode(BuildConfig.DEBUG);
         MobclickAgent.enableEncrypt(true);
-    }
-
-    private void init() {
-        if(Build.VERSION.SDK_INT >= 23){
-            String[] permissions = new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.GET_ACCOUNTS };
-            if(PermissionUtils.checkPermissions(this, permissions)){
-                start();
-            } else {
-                PermissionUtils.requestPermissions(this, permissions);
-            }
-        } else {
-            start();
-        }
     }
 
     private void start(){
@@ -100,14 +98,6 @@ public class WelcomeActivity extends Activity {
             public void onAnimationRepeat(Animation animation) { }
         });
         vWelcome.startAnimation(anim);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == Constants.REQ_PERMISSIONS){
-            start();
-        }
     }
 
     @Override

@@ -148,6 +148,40 @@
    public <init> (org.json.JSONObject);
 }
 
+-keep public interface com.umeng.socialize.**
+-keep public interface com.umeng.socialize.sensor.**
+-keep public interface com.umeng.scrshot.**
+-dontwarn com.umeng.**
+-dontwarn com.tencent.weibo.sdk.**
+-keep public class android.webkit.**
+-keep public interface com.tencent.**
+-keep public class com.umeng.socialize.* {*;}
+-keep class com.umeng.scrshot.**
+-keep public class com.tencent.** {*;}
+-keep class com.umeng.socialize.sensor.**
+-keep class com.umeng.socialize.handler.**
+-keep class com.umeng.socialize.handler.*
+-keep class UMMoreHandler{*;}
+-keep class com.tencent.mm.sdk.openapi.WXMediaMessage {*;}
+-keep class com.tencent.mm.sdk.openapi.** implements com.tencent.mm.sdk.openapi.WXMediaMessage$IMediaObject {*;}
+-keep class com.tencent.mm.sdk.modelmsg.WXMediaMessage {*;}
+-keep class com.tencent.mm.sdk.modelmsg.** implements com.tencent.mm.sdk.modelmsg.WXMediaMessage$IMediaObject {*;}
+-keep class com.tencent.mm.sdk.** {
+   *;
+}
+-keep class com.tencent.** {*;}
+-dontwarn com.tencent.**
+-keep public class com.linkedin.android.mobilesdk.R$*{
+    public static final int *;
+}
+-keep class com.tencent.open.TDialog$*
+-keep class com.tencent.open.TDialog$* {*;}
+-keep class com.tencent.open.PKDialog
+-keep class com.tencent.open.PKDialog {*;}
+-keep class com.tencent.open.PKDialog$*
+-keep class com.tencent.open.PKDialog$* {*;}
+-keep class com.linkedin.** { *; }
+
 ## ----------------------------------
 ##      Glide
 ## ----------------------------------

@@ -12,17 +12,20 @@ import android.widget.GridView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.horizon.gank.hgank.Application;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.ui.widget.TypefaceTextView;
 import com.horizon.gank.hgank.util.DisplayUtils;
 import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.ThemeUtils;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static u.aly.au.O;
-import static u.aly.au.l;
 
 /**
  * Created by Administrator on 2016/10/8.
@@ -32,10 +35,17 @@ public class SharePopupWindow extends PopupWindow {
     private Activity aty;
     private List<ShareVo> list;
     private int themeColor;
+    private String url, content, title, imageUrl;
+    private UMShareListener umShareListener;
 
-    public SharePopupWindow(Activity aty/*, String url, String content, String title, String imageUrl*/) {
+    public SharePopupWindow(Activity aty, String url, String content, String title, String imageUrl, UMShareListener umShareListener) {
         super(aty);
         this.aty = aty;
+        this.url = url;
+        this.content = content;
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.umShareListener = umShareListener;
         this.themeColor = ThemeUtils.getThemeColor(aty, R.attr.colorPrimary);
 
         buildList();
@@ -58,18 +68,22 @@ public class SharePopupWindow extends PopupWindow {
         this.list = new ArrayList<ShareVo>();
 
         ShareVo wxMoments = new ShareVo();
+        wxMoments.shareMedia = SHARE_MEDIA.WEIXIN_CIRCLE;
         wxMoments.platform = "朋友圈";
         wxMoments.iconId = R.string.ico_friends;
         list.add(wxMoments);
         ShareVo wechat = new ShareVo();
+        wechat.shareMedia = SHARE_MEDIA.WEIXIN;
         wechat.platform = "微信好友";
         wechat.iconId = R.string.ico_wechat;
         list.add(wechat);
         ShareVo qq = new ShareVo();
+        qq.shareMedia = SHARE_MEDIA.QQ;
         qq.platform = "QQ";
         qq.iconId = R.string.ico_qq;
         list.add(qq);
         ShareVo qzone = new ShareVo();
+        qzone.shareMedia = SHARE_MEDIA.QZONE;
         qzone.platform = "QQ空间";
         qzone.iconId = R.string.ico_space;
         list.add(qzone);
@@ -87,6 +101,7 @@ public class SharePopupWindow extends PopupWindow {
     }
 
     class ShareVo {
+        SHARE_MEDIA shareMedia;
         String platform;
         int iconId;
     }
@@ -97,6 +112,20 @@ public class SharePopupWindow extends PopupWindow {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             ShareVo shareVo = list.get(position);
             LogUtils.e("platform: "+shareVo.platform);
+
+            ShareAction shareAction = new ShareAction(aty);
+            if(content != null){
+                shareAction.withText(content);
+            }
+            if(title != null){
+                shareAction.withTitle(title);
+            }
+            if(url != null){
+                shareAction.withTargetUrl(url);
+            }
+            shareAction.withMedia(new UMImage(Application.application.getApplicationContext(), R.mipmap.icon));
+            shareAction.setPlatform(shareVo.shareMedia).setCallback(umShareListener).share();
+
             dismiss();
         }
     }

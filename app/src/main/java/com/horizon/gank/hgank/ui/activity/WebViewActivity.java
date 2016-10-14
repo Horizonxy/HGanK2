@@ -9,9 +9,9 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chanven.lib.cptr.PtrClassicFrameLayout;
 import com.chanven.lib.cptr.PtrDefaultHandler;
@@ -35,12 +35,14 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.mcxiaoke.bus.Bus;
 import com.mcxiaoke.bus.annotation.BusReceiver;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.sharesdk.onekeyshare.OnekeyShare;
 import rx.functions.Action1;
 
 public class WebViewActivity extends BaseActivity implements WebViewView {
@@ -67,6 +69,25 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     PtrClassicFrameLayout mRefreshLayout;
 
     private boolean mHasVideo;
+    private SharePopupWindow sharePopup;
+
+    private UMShareListener umShareListener = new UMShareListener() {
+
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            Toast.makeText(WebViewActivity.this, platform + " 分享成功!", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable throwable) {
+            Toast.makeText(WebViewActivity.this, platform + " 分享失败!", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            Toast.makeText(WebViewActivity.this, platform + " 分享取消!", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,35 +174,8 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
     }
 
     private void showShare() {
-//        SharePopupWindow sharePopup = new SharePopupWindow(this);
-//        sharePopup.show();
-
-        //ShareSDK.initSDK(this);
-        OnekeyShare oks = new OnekeyShare();
-        //关闭sso授权
-        oks.disableSSOWhenAuthorize();
-
-        // 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
-        //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
-        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-        oks.setTitle(mTvTitle.getText().toString());
-        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
-        oks.setTitleUrl(url);
-        // text是分享文本，所有平台都需要这个字段
-        oks.setText(mTvTitle.getText().toString());
-        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
-        // url仅在微信（包括好友和朋友圈）中使用
-        oks.setUrl(url);
-        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-        //oks.setComment("我是测试评论文本");
-        // site是分享此内容的网站名称，仅在QQ空间使用
-        oks.setSite(getString(R.string.app_name));
-        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-        oks.setSiteUrl(url);
-
-        // 启动分享GUI
-        oks.show(this);
+        sharePopup = new SharePopupWindow(this, url, mTvTitle.getText().toString(), mTvTitle.getText().toString(), null, umShareListener);
+        sharePopup.show();
     }
 
     private void firstLoad(){
@@ -229,6 +223,9 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
 
     @Override
     protected void onDestroy() {
+        if(sharePopup != null){
+            sharePopup.dismiss();
+        }
         mWebView.stopLoading();
         mWebView.setVisibility(View.GONE);
         Bus.getDefault().unregister(this);
@@ -273,4 +270,9 @@ public class WebViewActivity extends BaseActivity implements WebViewView {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+    }
 }

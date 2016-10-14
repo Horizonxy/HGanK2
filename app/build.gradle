@@ -17,8 +17,8 @@ android {
         applicationId "com.horizon.gank.hgank"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 11
-        versionName "11.0"
+        versionCode 12
+        versionName "12.0"
         multiDexEnabled true
     }
     buildTypes {
@@ -27,6 +27,7 @@ android {
             shrinkResources true
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         release {
             minifyEnabled true
@@ -34,6 +35,10 @@ android {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+        }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
         }
     }
     // 注释冲突
@@ -73,16 +78,16 @@ dependencies {
     compile 'com.google.dagger:dagger:2.0.2'
     apt 'com.google.dagger:dagger-compiler:2.0.2'
     compile 'com.mcxiaoke.xbus:bus:1.0.+'
-    compile files('libs/MobCommons-2016.0707.1708.jar')
-    compile files('libs/MobTools-2016.0707.1708.jar')
-    compile files('libs/ShareSDK-Core-2.7.4.jar')
-    compile files('libs/ShareSDK-QQ-2.7.4.jar')
-    compile files('libs/ShareSDK-QZone-2.7.4.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.7.4.jar')
-    compile files('libs/ShareSDK-Wechat-2.7.4.jar')
-    compile files('libs/ShareSDK-Wechat-Core-2.7.4.jar')
-    compile files('libs/ShareSDK-Wechat-Moments-2.7.4.jar')
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.1@aar'
+    compile files('libs/mta-sdk-1.6.2.jar')
+    compile files('libs/open_sdk_r5756_lite.jar')
+    compile files('libs/SocialSDK_QQZone_3.jar')
+    compile files('libs/SocialSDK_WeiXin_1.jar')
+    compile files('libs/SocialSDK_WeiXin_2.jar')
+    compile files('libs/umeng_social_api.jar')
+    compile files('libs/umeng_social_net.jar')
+    compile files('libs/umeng_social_view.jar')
 }

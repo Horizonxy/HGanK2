@@ -3,14 +3,15 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:gravity="center"
     android:background="@color/white"
-    android:padding="@dimen/normal_margin"
+    android:paddingTop="@dimen/normal_margin"
+    android:paddingBottom="@dimen/normal_margin"
     android:layout_height="wrap_content">
 
     <com.horizon.gank.hgank.ui.widget.TypefaceTextView
         android:id="@+id/tv_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="145px"
+        android:textSize="120px"
         />
 
     <TextView
@@ -18,5 +19,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/normal_margin"
-        android:textSize="@dimen/normal_size"/>
+        android:textSize="@dimen/small_size"/>
 </com.zhy.autolayout.AutoLinearLayout>
