@@ -12,13 +12,13 @@ android {
         }
     }
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "com.horizon.gank.hgank"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 12
-        versionName "12.0"
+        versionCode 14
+        versionName "14.0"
         multiDexEnabled true
     }
     buildTypes {
@@ -69,8 +69,8 @@ dependencies {
     compile('com.squareup.retrofit2:retrofit:2.1.0') {
         exclude module: 'okhttp'
     }
-    compile 'com.squareup.okhttp3:okhttp:3.3.1'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.mikepenz:iconics-core:2.5.5@aar'
@@ -90,4 +90,5 @@ dependencies {
     compile files('libs/umeng_social_api.jar')
     compile files('libs/umeng_social_net.jar')
     compile files('libs/umeng_social_view.jar')
+    compile 'com.orhanobut:logger:1.15'
 }

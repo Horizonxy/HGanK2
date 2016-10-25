@@ -4,10 +4,10 @@ import com.horizon.gank.hgank.di.component.DaggerAppComponent;
 import com.horizon.gank.hgank.di.module.ApiModule;
 import com.horizon.gank.hgank.di.module.AppModule;
 import com.horizon.gank.hgank.model.api.ApiService;
-import com.horizon.gank.hgank.util.LogUtils;
 import com.mcxiaoke.bus.Bus;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.orhanobut.logger.Logger;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 
@@ -32,8 +32,8 @@ public class Application extends android.app.Application {
         UMShareAPI.get(this);
         DaggerAppComponent.builder().apiModule(new ApiModule()).appModule(new AppModule(this)).build().inject(this);
         application = this;
+        Logger.init(getResources().getString(R.string.app_name));
 
-        LogUtils.setState(BuildConfig.DEBUG);
         Bus.getDefault().setStrictMode(true);
         Bus.getDefault().setDebug(BuildConfig.DEBUG);
     }

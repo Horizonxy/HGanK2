@@ -25,7 +25,6 @@ import com.horizon.gank.hgank.ui.widget.AnimationFrameLayout;
 import com.horizon.gank.hgank.util.BusEvent;
 import com.horizon.gank.hgank.util.DrawableUtils;
 import com.horizon.gank.hgank.util.FileUtils;
-import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.NetUtils;
 import com.horizon.gank.hgank.util.RetrofitUtil;
 import com.horizon.gank.hgank.util.SystemStatusManager;

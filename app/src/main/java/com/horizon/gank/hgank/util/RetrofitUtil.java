@@ -7,7 +7,6 @@ import com.horizon.gank.hgank.Constants;
 import com.horizon.gank.hgank.download.DownLoadInterceptor;
 import com.horizon.gank.hgank.model.api.DownLoadApiServide;
 import com.horizon.gank.hgank.util.http.NetworkInterceptor;
-import com.horizon.gank.hgank.util.http.NetworkOfflineInterceptor;
 import com.horizon.gank.hgank.util.http.UserAgentInterceptor;
 
 import java.io.File;
@@ -29,15 +28,15 @@ public class RetrofitUtil {
 
 		String userAgent = System.getProperty("http.agent", "");
 		//缓存路径
-		String cacheFile = Application.application.getCacheDir()+"/http";
-		Cache cache = new Cache(new File(cacheFile), Constants.SIZE_OF_CACHE);
+		FileUtils.delDir(new File( Application.application.getCacheDir(), "http"));
+		Cache cache = new Cache(new File(Application.application.getCacheDir(), "/response"), Constants.SIZE_OF_CACHE);
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.addInterceptor(new UserAgentInterceptor(userAgent))
 				//有网络时的拦截器
-				.addNetworkInterceptor(new NetworkInterceptor())
+				//.addNetworkInterceptor(new NetworkInterceptor())
 				//没网络时的拦截器
-				.addInterceptor(new NetworkOfflineInterceptor())
+				.addInterceptor(new NetworkInterceptor())
 				.addInterceptor(logging)
 				.cache(cache)
 				.connectTimeout(Constants.TIME_OUT, TimeUnit.SECONDS)

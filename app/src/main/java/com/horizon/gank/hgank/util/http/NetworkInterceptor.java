@@ -1,10 +1,14 @@
 package com.horizon.gank.hgank.util.http;
 
+import com.horizon.gank.hgank.Application;
 import com.horizon.gank.hgank.Constants;
+import com.horizon.gank.hgank.util.NetUtils;
 
 import java.io.IOException;
 
+import okhttp3.CacheControl;
 import okhttp3.Interceptor;
+import okhttp3.Request;
 import okhttp3.Response;
 
 /**
@@ -16,18 +20,27 @@ public class NetworkInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Response response = chain.proceed(chain.request());
-        if (response.header("Cache-Control") == null) {
-            String cache = chain.request().header("cache");
-            if (cache == null || "".equals(cache)) {
-                cache = Constants.CACHE_TIME + "";
-            }
-            response = response.newBuilder()
-                    .header("Cache-Control", "public, max-age=" + cache)
+        Request request = chain.request();
+        if (!NetUtils.isNetworkConnected(Application.application.getApplicationContext())) {
+            request = request.newBuilder()
+                    .cacheControl(CacheControl.FORCE_CACHE)
                     .build();
-            return response;
-        } else {
-            return response;
         }
+        Response response = chain.proceed(request);
+        if (NetUtils.isNetworkConnected(Application.application.getApplicationContext())) {
+            response.newBuilder()
+                    .removeHeader("Cache-Control")
+                    .header("Cache-Control", "public, max-age=0")
+                    .removeHeader("Pragma")
+                    .build();
+        } else {
+            response.newBuilder()
+                    .removeHeader("Cache-Control")
+                    .header("Cache-Control", "public, only-if-cached, max-stale=" + Constants.CACHE_TIME)
+                    .removeHeader("Pragma")
+                    .build();
+        }
+        return response;
     }
+
 }

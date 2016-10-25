@@ -16,8 +16,8 @@ import com.horizon.gank.hgank.Application;
 import com.horizon.gank.hgank.R;
 import com.horizon.gank.hgank.ui.widget.TypefaceTextView;
 import com.horizon.gank.hgank.util.DisplayUtils;
-import com.horizon.gank.hgank.util.LogUtils;
 import com.horizon.gank.hgank.util.ThemeUtils;
+import com.orhanobut.logger.Logger;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -111,7 +111,7 @@ public class SharePopupWindow extends PopupWindow {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             ShareVo shareVo = list.get(position);
-            LogUtils.e("platform: "+shareVo.platform);
+            Logger.d("platform: "+shareVo.platform);
 
             ShareAction shareAction = new ShareAction(aty);
             if(content != null){
