@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.horizon.gank.hgank.util.AppUtils;
-import com.horizon.gank.hgank.util.CrashHandler;
 import com.horizon.gank.hgank.util.PreUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.zhy.autolayout.AutoLayoutActivity;
+
+import butterknife.ButterKnife;
 
 public class BaseActivity extends AutoLayoutActivity {
 
@@ -34,4 +35,9 @@ public class BaseActivity extends AutoLayoutActivity {
         MobclickAgent.onPause(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
 }

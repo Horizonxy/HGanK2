@@ -91,4 +91,6 @@ public class Constants {
 		}
 	}
 
+	public static final String GITHUB_CLIENT_ID = "f5c3b8ccbfee6bb07f90";
+	public static final String GITHUB_CLIENT_SECRET = "32bb4d9103ead8c81848b48eb161b958944b54a9";
 }

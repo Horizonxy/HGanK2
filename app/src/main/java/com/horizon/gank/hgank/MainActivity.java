@@ -186,5 +186,6 @@ public class MainActivity extends BaseActivity {
         }
         Bus.getDefault().unregister(this);
         super.onDestroy();
+        ButterKnife.unbind(this);
     }
 }

@@ -20,7 +20,6 @@ import com.horizon.gank.hgank.util.FileUtils;
 import com.horizon.gank.hgank.util.SystemStatusManager;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.socialize.UmengTool;
 
 import java.io.File;
 
@@ -121,5 +120,6 @@ public class WelcomeActivity extends Activity {
         if(bitmap != null && !bitmap.isRecycled()){
             bitmap.recycle();
         }
+        ButterKnife.unbind(this);
     }
 }

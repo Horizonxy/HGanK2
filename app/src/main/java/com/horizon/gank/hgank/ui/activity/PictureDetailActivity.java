@@ -316,6 +316,7 @@ public class PictureDetailActivity extends Activity {
         if(bitmap != null && !bitmap.isRecycled()){
             bitmap.recycle();
         }
+        ButterKnife.unbind(this);
     }
 
     @Override
