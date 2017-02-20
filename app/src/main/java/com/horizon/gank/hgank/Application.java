@@ -4,6 +4,7 @@ import com.horizon.gank.hgank.di.component.DaggerAppComponent;
 import com.horizon.gank.hgank.di.module.ApiModule;
 import com.horizon.gank.hgank.di.module.AppModule;
 import com.horizon.gank.hgank.model.api.ApiService;
+import com.horizon.gank.hgank.util.AppUtils;
 import com.mcxiaoke.bus.Bus;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -29,6 +30,7 @@ public class Application extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppUtils.initCarsh(this);
         UMShareAPI.get(this);
         DaggerAppComponent.builder().apiModule(new ApiModule()).appModule(new AppModule(this)).build().inject(this);
         application = this;

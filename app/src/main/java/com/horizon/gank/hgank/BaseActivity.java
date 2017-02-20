@@ -3,7 +3,6 @@ package com.horizon.gank.hgank;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.horizon.gank.hgank.util.AppUtils;
 import com.horizon.gank.hgank.util.PreUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -17,8 +16,6 @@ public class BaseActivity extends AutoLayoutActivity {
         super.onCreate(savedInstanceState);
         int theme = PreUtils.getInt(this, Constants.BUNDLE_THEME, R.style.red_theme);
         setTheme(theme);
-
-        AppUtils.initCarsh(this);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.horizon.gank.hgank.util;
 
-import android.app.Activity;
+import android.content.Context;
 
 import com.horizon.gank.hgank.BuildConfig;
 
@@ -9,10 +9,10 @@ import com.horizon.gank.hgank.BuildConfig;
  */
 public class AppUtils {
 
-    public static void initCarsh(Activity activity){
+    public static void initCarsh(Context context){
         if(!BuildConfig.DEBUG) {
             CrashHandler crashHandler = CrashHandler.getInstance();
-            crashHandler.init(activity);
+            crashHandler.init(context);
         }
     }
 }
